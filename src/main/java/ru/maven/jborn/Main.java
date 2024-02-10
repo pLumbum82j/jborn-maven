@@ -8,36 +8,11 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
+    final static String JBORN = "jborn";
+    final static String URL = "jdbc:postgresql://localhost:5432/jborn_finance";
+
     public static void main(String[] args) {
         mainMenu();
-//        String inLogin = getLogin();
-//        System.out.println("Ваш логин " + inLogin);
-//        String inPassword = getPassword();
-//        System.out.println("Ваш пароль " + inPassword);
-//
-//        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/jborn_finance",
-//                "jborn", "jborn")
-//        ) {
-//            PreparedStatement preparedStatement = connection.prepareStatement(
-//                    "SELECT u.first_name, u.last_name, u.login, u.email\n" +
-//                            "FROM users as u \n" +
-//                            "WHERE u.login = ? AND u.password = ?;"
-//            );
-//            preparedStatement.setString(1, inLogin);
-//            preparedStatement.setString(2, inPassword);
-//
-//
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                System.out.println(resultSet.getString("first_name") + "\t " +
-//                        resultSet.getString("last_name") + "\t " +
-//                        resultSet.getString("email")
-//                );
-//            }
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     public static String getLogin() {
@@ -113,8 +88,8 @@ public class Main {
 
 
     public static void createUserAndAccount(User user) {
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/jborn_finance",
-                "jborn", "jborn")
+        try (Connection connection = DriverManager.getConnection(URL,
+                JBORN, JBORN)
         ) {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "insert into users(first_name, last_name, login, email, password)\n" +
@@ -158,8 +133,8 @@ public class Main {
     }
 
     public static void getAccountsUser(String login, String pass) {
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/jborn_finance",
-                "jborn", "jborn")
+        try (Connection connection = DriverManager.getConnection(URL,
+                JBORN, JBORN)
         ) {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT u.login, b.number_accounts, b.values\n" +
@@ -187,6 +162,4 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-
-
 }
