@@ -1,36 +1,36 @@
 CREATE TABLE users(
-  id serial primary key,
-  first_name varchar(255),
-  last_name varchar(255),
-  login varchar(50),
-  email varchar(50),
-  password varchar(30)
+                      id serial primary key,
+                      first_name varchar(255),
+                      last_name varchar(255),
+                      login varchar(50) unique,
+                      email varchar(50),
+                      password varchar(32)
 );
 
 CREATE TABLE spending_category (
-id serial primary key,
-category_name varchar(50)
+                                   id serial primary key,
+                                   category_name varchar(50) unique
 );
 
 CREATE TABLE bill (
-id serial primary key,
-number_accounts integer NOT NULL,
-user_id integer REFERENCES users (id) NOT NULL,
-values integer NOT NULL
+                      id serial primary key,
+                      number_accounts bigint unique NOT NULL,
+                      user_id bigint REFERENCES users (id) NOT NULL,
+                      values bigint NOT NULL
 );
 
 CREATE TABLE transaction (
-id serial primary key,
-date timestamp,
-number_accounts_id integer REFERENCES bill(id),
-values integer NOT NULL,
-spending_category_id integer REFERENCES spending_category(id) NOT NULL
+                             id serial primary key,
+                             date timestamp,
+                             number_accounts_id bigint REFERENCES bill(id),
+                             values bigint NOT NULL,
+                             spending_category_id bigint REFERENCES spending_category(id) NOT NULL
 );
 
-insert into users(first_name, last_name, login, email) VALUES ('Илья', 'Смирнов', 'pb82', 'pb82@mail.ru');
-insert into users(first_name, last_name, login, email) VALUES ('Наталья', 'Смирнова', 'nata', 'natastar@mail.ru');
-insert into users(first_name, last_name, login, email) VALUES ('Иван', 'Штепа', 'shtepa', 'shtepa87@yandex.ru');
-insert into users(first_name, last_name, login, email) VALUES ('Павел', 'Цемежевский', 'pahan', 'pasha66@gmail.com');
+insert into users(first_name, last_name, login, email, password) VALUES ('Илья', 'Смирнов', 'pb82', 'pb82@mail.ru', '202cb962ac59075b964b07152d234b70');
+insert into users(first_name, last_name, login, email, password) VALUES ('Наталья', 'Смирнова', 'nata', 'natastar@mail.ru', '202cb962ac59075b964b07152d234b70');
+insert into users(first_name, last_name, login, email, password) VALUES ('Иван', 'Штепа', 'shtepa', 'shtepa87@yandex.ru', '202cb962ac59075b964b07152d234b70');
+insert into users(first_name, last_name, login, email, password) VALUES ('Павел', 'Цемежевский', 'pahan', 'pasha66@gmail.com', '202cb962ac59075b964b07152d234b70');
 
 insert into spending_category(category_name) VALUES ('Продукты');
 insert into spending_category(category_name) VALUES ('Зарплата');
