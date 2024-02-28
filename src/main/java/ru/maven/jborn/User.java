@@ -3,13 +3,19 @@ package ru.maven.jborn;
 import java.util.Map;
 
 public class User {
-
+    private Integer id;
     private String firstName;
     private String lastName;
     private String login;
     private String email;
     private String password;
     private Map<Integer, Integer> account;
+
+    public User(){}
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public User(String firstName, String lastName, String login, String email, String password, Map<Integer, Integer> account) {
         this.firstName = firstName;
@@ -18,6 +24,10 @@ public class User {
         this.email = email;
         this.password = password;
         this.account = account;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getFirstName() {
