@@ -1,4 +1,4 @@
-package ru.maven.jborn;
+package ru.maven.jborn.models;
 
 import java.util.Map;
 

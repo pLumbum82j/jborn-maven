@@ -1,8 +1,6 @@
 package ru.maven.jborn;
 
-import ru.maven.jborn.dao.domain.UserDao;
-
-import java.sql.SQLException;
+import ru.maven.jborn.terminal.View;
 
 public class NewMain {
     static View view = new View();

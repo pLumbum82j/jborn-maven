@@ -1,7 +1,7 @@
 package ru.maven.jborn.mappers;
 
-import ru.maven.jborn.User;
-import ru.maven.jborn.dto.UserDto;
+import ru.maven.jborn.models.User;
+import ru.maven.jborn.models.dto.UserDto;
 
 public class UserMapper {
     public UserDto userToUserDto(User user) {

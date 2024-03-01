@@ -1,39 +1,37 @@
-package ru.maven.jborn;
-
-import ru.maven.jborn.terminal.UserTerminal;
+package ru.maven.jborn.terminal;
 
 import java.util.Scanner;
 
 public class View {
-    private UserTerminal userTerminal = null;
+    private UserTerminal userTerminal = new UserTerminal();
 
-    public void mainMenu(){
+    public void mainMenu() {
         while (true) {
             System.out.println();
             System.out.println("Что вы хотите сделать:");
-            System.out.println("Зарегистрироваться - нажмите '1'");
-            System.out.println("Залогиниться - нажмите '2'");
-            System.out.println("Выход из программы - нажмите '0'");
-            Scanner scanner = new Scanner(System.in);;
+            System.out.println("[1] Зарегистрироваться");
+            System.out.println("[2] Залогиниться");
+            System.out.println("[3] Найти пользователя по id");
+            System.out.println("[0] Выход из программы");
+            Scanner scanner = new Scanner(System.in);
+            ;
             switch (scanner.nextInt()) {
                 case (1):
                     System.out.println("Вы выбрали = Зарегистрироваться");
-                    userTerminal = new UserTerminal();
+                    System.out.println("-----------------------------------");
                     userTerminal.createUser();
+                   //mainMenu();
                     break;
                 case (2):
                     System.out.println("Вы выбрали = Залогиниться");
-                    userTerminal = new UserTerminal();
+                    System.out.println("-----------------------------------");
                     userTerminal.getUser();
-//                    inLogin = getLogin();
-//                    inPassword = getPassword();
-//                    getAccountsUser(inLogin, inPassword);
                     break;
-                case(3):
+                case (3):
                     System.out.println("Вы выбрали = Найти пользователя по id");
-                    userTerminal = new UserTerminal();
-                    System.out.println(userTerminal.getUserById());
-                    mainMenu();
+                    System.out.println("-----------------------------------");
+                    userTerminal.getUserById();
+                     mainMenu();
                 case (0):
                     return;
                 default:

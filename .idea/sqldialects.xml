@@ -3,5 +3,6 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/shema.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/ru/maven/jborn/Main.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/ru/maven/jborn/dao/domain/UserDao.java" dialect="PostgreSQL" />
   </component>
 </project>

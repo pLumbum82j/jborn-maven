@@ -1,6 +1,7 @@
 package ru.maven.jborn;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import ru.maven.jborn.models.User;
 
 import java.sql.*;
 import java.util.HashMap;

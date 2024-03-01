@@ -1,6 +1,6 @@
 package ru.maven.jborn.dao.domain;
 
-import ru.maven.jborn.User;
+import ru.maven.jborn.models.User;
 import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 
@@ -25,7 +25,7 @@ public class UserDao implements Dao<User, Integer> {
 
     @Override
     public User findById(Integer id) throws SQLException {
-        User resultUser = null;
+        User resultUser = new User();
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from users where id = ?");
             ps.setLong(1, id);
@@ -39,7 +39,6 @@ public class UserDao implements Dao<User, Integer> {
                 resultUser.setEmail(rs.getString("email"));
             }
         }
-
         return resultUser;
     }
 
@@ -50,7 +49,27 @@ public class UserDao implements Dao<User, Integer> {
 
     @Override
     public User insert(User user) {
-        return null;
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection
+                    .prepareStatement("insert into users(first_name, last_name, login, email, password) VALUES (?,?,?,?,?)");
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getLogin());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, user.getPassword());
+            ps.executeUpdate();
+
+            PreparedStatement psGetId = connection.prepareStatement("select id from users where login = ?");
+            psGetId.setString(1, user.getLogin());
+            ResultSet rs = psGetId.executeQuery();
+
+            while (rs.next()) {
+                user.setId(rs.getInt("id"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return user;
     }
 
     @Override
@@ -59,7 +78,33 @@ public class UserDao implements Dao<User, Integer> {
     }
 
     @Override
-    public boolean delete(Integer integer) {
-        return false;
+    public boolean delete(Integer id) {
+        boolean result;
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection
+                    .prepareStatement("delete from users where id = ?");
+            ps.setInt(1, id);
+            result = ps.execute();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public int duplicateCheck(User user) {
+        int result = 0;
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("select count(*) as count from users where login = ? or email = ?");
+            ps.setString(1, user.getLogin());
+            ps.setString(2, user.getEmail());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 }

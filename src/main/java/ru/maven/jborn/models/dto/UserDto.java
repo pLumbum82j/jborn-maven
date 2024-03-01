@@ -1,4 +1,4 @@
-package ru.maven.jborn.dto;
+package ru.maven.jborn.models.dto;
 
 public class UserDto {
     Integer id;
