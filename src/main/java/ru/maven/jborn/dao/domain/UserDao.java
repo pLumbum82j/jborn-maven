@@ -24,7 +24,7 @@ public class UserDao implements Dao<User, Integer> {
     }
 
     @Override
-    public User findById(Integer id) throws SQLException {
+    public User findById(Integer id) {
         User resultUser = new User();
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from users where id = ?");
@@ -38,6 +38,8 @@ public class UserDao implements Dao<User, Integer> {
                 resultUser.setLogin(rs.getString("login"));
                 resultUser.setEmail(rs.getString("email"));
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return resultUser;
     }

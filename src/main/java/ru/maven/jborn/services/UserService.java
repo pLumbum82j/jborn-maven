@@ -32,11 +32,7 @@ public class UserService {
 
     public UserDto getUserById(Integer id) {
         UserDto userDto;
-        try {
-            userDto = userMapper.userToUserDto(userDao.findById(id));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        userDto = userMapper.userToUserDto(userDao.findById(id));
         return userDto;
     }
 
