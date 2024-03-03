@@ -4,10 +4,8 @@ import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Category;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDao implements Dao<Category, Integer> {
@@ -25,12 +23,37 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     @Override
     public Category findById(Integer integer) {
-        return null;
+        Category category = new Category();
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("select id, category_name from spending_category where id = ?");
+            ps.setInt(1, integer);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                category.setId(rs.getInt("id"));
+                category.setCategoryName("categoryName");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return category;
     }
 
     @Override
     public List<Category> findByAll() {
-        return null;
+        List<Category> resultListCategory = new ArrayList<>();
+        try (Connection connection = DaoFactory.getConnection()) {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select id, category_name from spending_category");
+            while (rs.next()) {
+                Category category = new Category();
+                category.setId(rs.getInt("id"));
+                category.setCategoryName(rs.getString("category_name"));
+                resultListCategory.add(category);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultListCategory;
     }
 
     @Override
@@ -59,7 +82,19 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     @Override
     public boolean delete(Integer integer) {
-        return false;
+        boolean result = false;
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("delete from spending_category where id = ?");
+            ps.setInt(1, integer);
+            int check = ps.executeUpdate();
+            if (check == 1) {
+                result = true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return result;
     }
 
     private Category findByName(Category category) {
