@@ -1,6 +1,7 @@
 package ru.maven.jborn.terminal;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.UserDto;
 import ru.maven.jborn.services.UserService;
 
@@ -10,6 +11,7 @@ import java.util.Scanner;
 public class UserTerminal {
     UserService userService = new UserService();
     CategoryTerminal categoryTerminal = new CategoryTerminal();
+    BillTerminal billTerminal = new BillTerminal();
     Scanner scanner = new Scanner(System.in);
     String inLogin;
     String inPassword;
@@ -42,11 +44,14 @@ public class UserTerminal {
         System.out.println("Введите пароль:");
         inPassword = checkNull(DigestUtils.md5Hex(scanner.nextLine()));
 
+        //доделать проверку пользователя
+        User user = userService.getUser(inLogin, inPassword);
+
         while (true) {
             System.out.println();
             System.out.println("Что вы хотите сделать:");
             System.out.println("[1] Работа с категориями");
-            System.out.println("[-2] Работа с счетами");
+            System.out.println("[2] Работа с счетами");
             System.out.println("[-3] Изменить данные пользователя");
             System.out.println("[-4] Удалить пользователя");
             System.out.println("[0] Выход из программы");
@@ -56,6 +61,11 @@ public class UserTerminal {
                     System.out.println("-----------------------------------");
                     //неправильно построено меню, чуток переделать
                     categoryTerminal.createCategory();
+                    break;
+                case (2):
+                    System.out.println("Вы выбрали = Работа со счетами");
+                    System.out.println("-----------------------------------");
+                    billTerminal.menuBill(user);
                     break;
                 case (0):
                     return;

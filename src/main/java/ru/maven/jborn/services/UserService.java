@@ -6,8 +6,6 @@ import ru.maven.jborn.mappers.UserMapper;
 import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.UserDto;
 
-import java.sql.SQLException;
-
 public class UserService {
     UserMapper userMapper = new UserMapper();
     UserDao userDao = UserDao.getUserDao();
@@ -26,8 +24,8 @@ public class UserService {
         }
     }
 
-    public void getUser() {
-        userDao.delete(17);
+    public User getUser(String login, String password) {
+        return userDao.getUser(login, password);
     }
 
     public UserDto getUserById(Integer id) {

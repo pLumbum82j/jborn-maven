@@ -1,8 +1,8 @@
 package ru.maven.jborn.dao.domain;
 
-import ru.maven.jborn.models.User;
 import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
+import ru.maven.jborn.models.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -61,7 +61,7 @@ public class UserDao implements Dao<User, Integer> {
             ps.setString(5, user.getPassword());
             ps.executeUpdate();
 
-            PreparedStatement psGetId = connection.prepareStatement("select id from users where login = ?");
+            PreparedStatement psGetId = connection.prepareStatement("select * from users where id = ?");
             psGetId.setString(1, user.getLogin());
             ResultSet rs = psGetId.executeQuery();
 
@@ -108,5 +108,22 @@ public class UserDao implements Dao<User, Integer> {
             throw new RuntimeException(e);
         }
         return result;
+    }
+
+    public User getUser(String login, String password) {
+        User user = new User();
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("select * from users where login = ?");
+            ps.setString(1, login);
+           // ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user.setId(rs.getInt("id"));
+                user.setLogin(rs.getString("login"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return user;
     }
 }
