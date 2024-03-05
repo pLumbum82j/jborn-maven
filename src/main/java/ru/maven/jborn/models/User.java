@@ -9,7 +9,7 @@ public class User {
     private String login;
     private String email;
     private String password;
-    private Map<Integer, Integer> account;
+    private Map<String, Integer> account;
 
     public User(){}
 
@@ -17,7 +17,7 @@ public class User {
         this.id = id;
     }
 
-    public User(String firstName, String lastName, String login, String email, String password, Map<Integer, Integer> account) {
+    public User(String firstName, String lastName, String login, String email, String password, Map<String, Integer> account) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
@@ -50,7 +50,7 @@ public class User {
         return password;
     }
 
-    public Map<Integer, Integer> getAccount() {
+    public Map<String, Integer> getAccount() {
         return account;
     }
 
@@ -74,7 +74,7 @@ public class User {
         this.password = password;
     }
 
-    public void setAccount(Map<Integer, Integer> account) {
+    public void setAccount(Map<String, Integer> account) {
         this.account = account;
     }
 

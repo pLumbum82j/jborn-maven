@@ -45,10 +45,10 @@ public class Main {
         String password = getPassword();
         System.out.println("Сколько счетов пользователя создать?");
         int count = scanner.nextInt();
-        Map<Integer, Integer> maps = new HashMap<>();
+        Map<String, Integer> maps = new HashMap<>();
         for (int i = 0; i < count; i++) {
-            System.out.println("Введите Номер счёта");
-            Integer account = scanner.nextInt();
+            System.out.println("Введите название счёта");
+            String account = scanner.nextLine();
             System.out.println("Введите баланс");
             Integer value = scanner.nextInt();
             maps.put(account, value);
@@ -117,12 +117,12 @@ public class Main {
             }
 
 
-            for (Map.Entry<Integer, Integer> maps : user.getAccount().entrySet()) {
+            for (Map.Entry<String, Integer> maps : user.getAccount().entrySet()) {
                 PreparedStatement preparedStatementAccount = connection.prepareStatement(
-                        "insert into bill(number_accounts, user_id, values)\n" +
+                        "insert into bill(name_account, user_id, values)\n" +
                                 "VALUES (?, ?, ?);"
                 );
-                preparedStatementAccount.setInt(1, maps.getKey());
+                preparedStatementAccount.setString(1, maps.getKey());
                 preparedStatementAccount.setInt(2, userId);
                 preparedStatementAccount.setInt(3, maps.getValue());
                 preparedStatementAccount.executeUpdate();
@@ -138,7 +138,7 @@ public class Main {
                 JBORN, JBORN)
         ) {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT u.login, b.number_accounts, b.values\n" +
+                    "SELECT u.login, b.name_account, b.values\n" +
                             "FROM users as u\n" +
                             "JOIN bill b on u.id = b.user_id\n" +
                             "WHERE u.login = ? AND u.password = ?;"

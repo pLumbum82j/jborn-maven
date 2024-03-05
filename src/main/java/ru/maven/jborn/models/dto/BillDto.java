@@ -3,7 +3,7 @@ package ru.maven.jborn.models.dto;
 public class BillDto {
 
     public Integer id;
-    public Integer numberAccounts;
+    public String nameAccount;
 
     public Integer values;
 
@@ -15,12 +15,12 @@ public class BillDto {
         this.id = id;
     }
 
-    public Integer getNumberAccounts() {
-        return numberAccounts;
+    public String getNameAccounts() {
+        return nameAccount;
     }
 
-    public void setNumberAccounts(Integer numberAccounts) {
-        this.numberAccounts = numberAccounts;
+    public void setNameAccounts(String numberAccounts) {
+        this.nameAccount = numberAccounts;
     }
 
     public Integer getValues() {
@@ -35,7 +35,7 @@ public class BillDto {
     public String toString() {
         return "BillDto{" +
                 "id=" + id +
-                ", numberAccounts=" + numberAccounts +
+                ", nameAccount=" + nameAccount +
                 ", values=" + values +
                 '}';
     }

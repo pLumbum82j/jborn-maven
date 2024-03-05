@@ -2,7 +2,7 @@ package ru.maven.jborn.models;
 
 public class Bill {
     private Integer id;
-    private Integer numberAccounts;
+    private String nameAccount;
     private Integer userId;
     private Integer values;
 
@@ -14,12 +14,12 @@ public class Bill {
         this.id = id;
     }
 
-    public Integer getNumberAccounts() {
-        return numberAccounts;
+    public String getNameAccount() {
+        return nameAccount;
     }
 
-    public void setNumberAccounts(Integer numberAccounts) {
-        this.numberAccounts = numberAccounts;
+    public void setNameAccount(String numberAccounts) {
+        this.nameAccount = numberAccounts;
     }
 
     public Integer getUserId() {
@@ -42,7 +42,7 @@ public class Bill {
     public String toString() {
         return "Bill{" +
                 "id=" + id +
-                ", numberAccounts=" + numberAccounts +
+                ", nameAccount=" + nameAccount +
                 ", userId=" + userId +
                 ", values=" + values +
                 '}';

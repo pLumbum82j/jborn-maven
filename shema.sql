@@ -14,7 +14,7 @@ CREATE TABLE spending_category (
 
 CREATE TABLE bill (
                       id serial primary key,
-                      number_accounts bigint unique NOT NULL,
+                      name_account varchar(50) NOT NULL,
                       user_id bigint REFERENCES users (id) NOT NULL,
                       values bigint NOT NULL
 );
@@ -22,7 +22,7 @@ CREATE TABLE bill (
 CREATE TABLE transaction (
                              id serial primary key,
                              date timestamp,
-                             number_accounts_id bigint REFERENCES bill(id),
+                             name_account_id bigint REFERENCES bill(id),
                              values bigint NOT NULL,
                              spending_category_id bigint REFERENCES spending_category(id) NOT NULL
 );
@@ -38,18 +38,18 @@ insert into spending_category(category_name) VALUES ('Автомобиль');
 insert into spending_category(category_name) VALUES ('Развлечения');
 insert into spending_category(category_name) VALUES ('Здоровье');
 
-insert into bill(number_accounts, user_id, values) VALUES ('123321', 1,10000);
-insert into bill(number_accounts, user_id, values) VALUES ('333333', 2,9000000);
-insert into bill(number_accounts, user_id, values) VALUES ('555555', 2,787);
-insert into bill(number_accounts, user_id, values) VALUES ('777777', 3,7777777);
-insert into bill(number_accounts, user_id, values) VALUES ('32545', 3,3);
-insert into bill(number_accounts, user_id, values) VALUES ('525851', 4,100);
+insert into bill(name_account, user_id, values) VALUES ('Сбербанк', 1,10000);
+insert into bill(name_account, user_id, values) VALUES ('Тинькоф', 2,9000000);
+insert into bill(name_account, user_id, values) VALUES ('Альфабанк', 2,787);
+insert into bill(name_account, user_id, values) VALUES ('Яндекс', 3,7777777);
+insert into bill(name_account, user_id, values) VALUES ('Сбербанк', 3,3);
+insert into bill(name_account, user_id, values) VALUES ('Убрир', 4,100);
 
-insert into transaction(date, number_accounts_id, values, spending_category_id) VALUES ('2024-01-01', 1, -100, 1);
-insert into transaction(date, number_accounts_id, values, spending_category_id) VALUES ('2024-01-02', 2, 300, 2);
-insert into transaction(date, number_accounts_id, values, spending_category_id) VALUES ('2024-01-01', 3, -1000, 3);
-insert into transaction(date, number_accounts_id, values, spending_category_id) VALUES ('2024-01-02', 4, -10, 4);
-insert into transaction(date, number_accounts_id, values, spending_category_id) VALUES ('2024-01-02', 2, -1000, 5);
+insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-01', 1, -100, 1);
+insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-02', 2, 300, 2);
+insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-01', 3, -1000, 3);
+insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-02', 4, -10, 4);
+insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-02', 2, -1000, 5);
 
 select u.first_name, u.last_name, b.number_accounts
 from users as u

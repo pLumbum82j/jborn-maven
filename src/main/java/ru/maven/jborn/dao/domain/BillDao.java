@@ -8,7 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BillDao implements Dao<Bill, Integer> {
 
@@ -39,18 +41,19 @@ public class BillDao implements Dao<Bill, Integer> {
     public Bill insert(Bill bill) {
         Bill resultBill = new Bill();
         try (Connection connection = DaoFactory.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("insert into bill(number_accounts, user_id, values) values (?,?,?)");
-            ps.setInt(1, bill.getNumberAccounts());
+            PreparedStatement ps = connection.prepareStatement("insert into bill(name_account, user_id, values) values (?,?,?)");
+            ps.setString(1, bill.getNameAccount());
             ps.setInt(2, bill.getUserId());
             ps.setInt(3, bill.getValues());
             ps.executeUpdate();
-            PreparedStatement psGetId = connection.prepareStatement("select id from bill where number_accounts = ?");
-            psGetId.setInt(1, bill.getNumberAccounts());
+            PreparedStatement psGetId = connection.prepareStatement("select id from bill where user_id = ? and name_account = ?");
+            psGetId.setInt(1, bill.getUserId());
+            psGetId.setString(2, bill.getNameAccount());
             ResultSet rs = psGetId.executeQuery();
             while (rs.next()) {
                 resultBill.setId(rs.getInt("id"));
                 resultBill.setUserId(bill.getUserId());
-                resultBill.setNumberAccounts(bill.getNumberAccounts());
+                resultBill.setNameAccount(bill.getNameAccount());
                 resultBill.setValues(bill.getValues());
             }
         } catch (SQLException e) {
@@ -67,5 +70,22 @@ public class BillDao implements Dao<Bill, Integer> {
     @Override
     public boolean delete(Integer integer) {
         return false;
+    }
+
+    public Map<Integer, String> checkDuplicateInvoiceAndCount(Bill bill) {
+        Map<Integer, String> resultAccout = new HashMap<>();
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("select id, name_account from bill where user_id = ?");
+            ps.setInt(1, bill.getUserId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Integer id = rs.getInt("id");
+                String name = rs.getString("name_account");
+                resultAccout.put(id, name);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultAccout;
     }
 }
