@@ -37,6 +37,7 @@ public class BillDao implements Dao<Bill, Integer> {
 
     @Override
     public Bill insert(Bill bill) {
+        Bill resultBill = new Bill();
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("insert into bill(number_accounts, user_id, values) values (?,?,?)");
             ps.setInt(1, bill.getNumberAccounts());
@@ -44,15 +45,18 @@ public class BillDao implements Dao<Bill, Integer> {
             ps.setInt(3, bill.getValues());
             ps.executeUpdate();
             PreparedStatement psGetId = connection.prepareStatement("select id from bill where number_accounts = ?");
-            ps.setInt(1, bill.getNumberAccounts());
-            ResultSet rs = ps.executeQuery();
+            psGetId.setInt(1, bill.getNumberAccounts());
+            ResultSet rs = psGetId.executeQuery();
             while (rs.next()) {
-                bill.setId(rs.getInt("id"));
+                resultBill.setId(rs.getInt("id"));
+                resultBill.setUserId(bill.getUserId());
+                resultBill.setNumberAccounts(bill.getNumberAccounts());
+                resultBill.setValues(bill.getValues());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return bill;
+        return resultBill;
     }
 
     @Override

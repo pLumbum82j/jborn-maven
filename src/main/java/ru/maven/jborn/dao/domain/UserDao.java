@@ -115,11 +115,14 @@ public class UserDao implements Dao<User, Integer> {
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from users where login = ?");
             ps.setString(1, login);
-           // ps.setString(2, password);
+            // ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 user.setId(rs.getInt("id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
                 user.setLogin(rs.getString("login"));
+                user.setEmail(rs.getString("email"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
