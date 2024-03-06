@@ -61,7 +61,7 @@ public class UserDao implements Dao<User, Integer> {
             ps.setString(5, user.getPassword());
             ps.executeUpdate();
 
-            PreparedStatement psGetId = connection.prepareStatement("select * from users where id = ?");
+            PreparedStatement psGetId = connection.prepareStatement("select id from users where login = ?");
             psGetId.setString(1, user.getLogin());
             ResultSet rs = psGetId.executeQuery();
 
@@ -113,9 +113,9 @@ public class UserDao implements Dao<User, Integer> {
     public User getUser(String login, String password) {
         User user = new User();
         try (Connection connection = DaoFactory.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select * from users where login = ?");
+            PreparedStatement ps = connection.prepareStatement("select * from users where login = ? and password = ?");
             ps.setString(1, login);
-            // ps.setString(2, password);
+            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 user.setId(rs.getInt("id"));

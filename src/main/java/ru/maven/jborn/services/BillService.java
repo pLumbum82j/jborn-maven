@@ -1,24 +1,31 @@
 package ru.maven.jborn.services;
 
 import ru.maven.jborn.dao.domain.BillDao;
+import ru.maven.jborn.dao.domain.UserDao;
 import ru.maven.jborn.mappers.BillMapper;
 import ru.maven.jborn.models.Bill;
 import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.BillDto;
+import ru.maven.jborn.models.dto.UserDto;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BillService {
     BillDao billDao = BillDao.getBillDao();
     BillMapper billMapper = new BillMapper();
+    UserDao userDao = UserDao.getUserDao();
 
-    public BillDto createBill(User user, String nameAccount) {
+    public BillDto createBill(UserDto user, String password, String nameAccount) {
         Bill bill = new Bill();
+        User tempUser = userDao.getUser(user.getLogin(), password);
         bill.setNameAccount(nameAccount);
-        bill.setUserId(user.getId());
+        bill.setUserId(tempUser.getId());
         bill.setValues(0);
-        Integer checkDuplicate = checkDuplicateInvoiceAndCount(bill);
+        int checkDuplicate = checkDuplicateInvoiceAndCount(bill);
         if (checkDuplicate == 1) {
             return new BillDto();
         } else if (checkDuplicate == 2) {
@@ -29,6 +36,29 @@ public class BillService {
             Bill resultBillDao = billDao.insert(bill);
             return billMapper.billToBillDto(resultBillDao);
         }
+    }
+
+    public List<BillDto> getBillAllUser(UserDto user, String password) {
+        List<BillDto> result = new ArrayList<>();
+        User tempUser = userDao.getUser(user.getLogin(), password);
+        List<Bill> tempListBillAll;
+        tempListBillAll = billDao.findByAll();
+        List<Bill> resultList = tempListBillAll.stream()
+                .filter(x -> Objects.equals(x.getUserId(), tempUser.getId()))
+                .collect(Collectors.toList());
+        if (resultList.size() == 0) {
+            return result;
+        } else {
+            return resultList.stream().map(o -> billMapper.billToBillDto(o)).collect(Collectors.toList());
+        }
+    }
+
+    public boolean removeBillUser(UserDto user, String password, String nameBill) {
+        User tempUser = userDao.getUser(user.getLogin(), password);
+        List<Bill> tempListBillAllUsers = billDao.findByAll();
+        List<Bill> tempListBillUser = tempListBillAllUsers.stream().filter(o -> o.getUserId().equals(tempUser.getId())).collect(Collectors.toList());
+        List<Bill> resultListNameBillUser = tempListBillUser.stream().filter(b -> b.getNameAccount().equals(nameBill)).collect(Collectors.toList());
+        return billDao.delete(resultListNameBillUser.get(0).getId());
     }
 
     private Integer checkDuplicateInvoiceAndCount(Bill bill) {

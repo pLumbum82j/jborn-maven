@@ -24,8 +24,14 @@ public class UserService {
         }
     }
 
-    public User getUser(String login, String password) {
-        return userDao.getUser(login, password);
+    public UserDto getUser(String login, String password) {
+        User user = new User();
+        user = userDao.getUser(login, password);
+        if (user.getId() == null) {
+            return new UserDto();
+        } else {
+            return userMapper.userToUserDto(user);
+        }
     }
 
     public UserDto getUserById(Integer id) {

@@ -1,7 +1,6 @@
 package ru.maven.jborn.terminal;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.UserDto;
 import ru.maven.jborn.services.UserService;
 
@@ -43,9 +42,15 @@ public class UserTerminal {
         inLogin = checkNull(scanner.nextLine());
         System.out.println("Введите пароль:");
         inPassword = checkNull(DigestUtils.md5Hex(scanner.nextLine()));
-
         //доделать проверку пользователя
-        User user = userService.getUser(inLogin, inPassword);
+        UserDto user = userService.getUser(inLogin, inPassword);
+
+        if (user.getLogin() == null) {
+            System.out.println("Такого пользователя не существует");
+            return;
+        } else {
+            System.out.println("Вы зашли под пользователем " + user.getLogin());
+        }
 
         while (true) {
             System.out.println();
@@ -54,19 +59,22 @@ public class UserTerminal {
             System.out.println("[2] Работа с счетами");
             System.out.println("[-3] Изменить данные пользователя");
             System.out.println("[-4] Удалить пользователя");
-            System.out.println("[0] Выход из программы");
+            System.out.println("[0] Выйти из под пользователя");
             switch (scanner.nextInt()) {
                 case (1):
                     System.out.println("Вы выбрали = Работа с категориями");
                     System.out.println("-----------------------------------");
-                    //неправильно построено меню, чуток переделать
-                    categoryTerminal.createCategory();
+                    categoryTerminal.categoryMenu();
                     break;
                 case (2):
                     System.out.println("Вы выбрали = Работа со счетами");
                     System.out.println("-----------------------------------");
-                    billTerminal.menuBill(user);
+                    billTerminal.billMenu(user, inPassword);
                     break;
+                case (4):
+                    System.out.println("Вы выбрали = Удалить пользователя");
+                    System.out.println("-----------------------------------");
+
                 case (0):
                     return;
                 default:

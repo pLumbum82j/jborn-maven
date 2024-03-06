@@ -20,7 +20,6 @@ public class View {
                     System.out.println("Вы выбрали = Зарегистрироваться");
                     System.out.println("-----------------------------------");
                     userTerminal.createUser();
-                   //mainMenu();
                     break;
                 case (2):
                     System.out.println("Вы выбрали = Залогиниться");

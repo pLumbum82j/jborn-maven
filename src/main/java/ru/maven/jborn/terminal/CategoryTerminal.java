@@ -9,9 +9,8 @@ import java.util.Scanner;
 public class CategoryTerminal {
     CategoryService categoryService = new CategoryService();
     Scanner scanner = new Scanner(System.in);
-    String categoryName;
 
-    public void createCategory() {
+    public void categoryMenu() {
         while (true) {
             System.out.println();
             System.out.println("Что вы хотите сделать:");
@@ -19,15 +18,14 @@ public class CategoryTerminal {
             System.out.println("[2] Посмотреть все категории");
             System.out.println("[3] Найти категорию по id");
             System.out.println("[4] Удалить категорию по id");
-            System.out.println("[0] Выйти из меню пользователя");
+            System.out.println("[0] Выйти из меню категорий");
             switch (scanner.nextInt()) {
                 case (1):
                     System.out.println("Вы выбрали = Создать категорию");
                     System.out.println("-----------------------------------");
                     System.out.println("Введите имя для категории");
                     Scanner scanner1 = new Scanner(System.in);
-                    categoryName = checkNull(scanner1.nextLine());
-                    CategoryDto categoryDto = categoryService.createCategory(categoryName);
+                    CategoryDto categoryDto = categoryService.createCategory(checkNull(scanner1.nextLine()));
                     if (categoryDto.getId() == null) {
                         System.out.println("Такая категория уже существует");
                     } else {
@@ -70,9 +68,7 @@ public class CategoryTerminal {
                 default:
                     System.out.println("Такого варианта выбора нет");
             }
-
         }
-
     }
 
     private String checkNull(String string) {

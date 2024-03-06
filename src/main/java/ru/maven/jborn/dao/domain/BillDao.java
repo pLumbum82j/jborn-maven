@@ -4,10 +4,8 @@ import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Bill;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,22 @@ public class BillDao implements Dao<Bill, Integer> {
 
     @Override
     public List<Bill> findByAll() {
-        return null;
+        List<Bill> resultAllBill = new ArrayList<>();
+        try (Connection connection = DaoFactory.getConnection()) {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select * from bill");
+            while (rs.next()) {
+                Bill bill = new Bill();
+                bill.setId(rs.getInt("id"));
+                bill.setUserId(rs.getInt("user_id"));
+                bill.setNameAccount(rs.getString("name_account"));
+                bill.setValues(rs.getInt("values"));
+                resultAllBill.add(bill);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultAllBill;
     }
 
     @Override
@@ -69,7 +82,17 @@ public class BillDao implements Dao<Bill, Integer> {
 
     @Override
     public boolean delete(Integer integer) {
-        return false;
+        boolean result;
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection
+                    .prepareStatement("delete from bill where id = ?");
+            ps.setInt(1, integer);
+            result = ps.execute();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
     public Map<Integer, String> checkDuplicateInvoiceAndCount(Bill bill) {
