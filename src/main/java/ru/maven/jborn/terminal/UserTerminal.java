@@ -11,6 +11,7 @@ public class UserTerminal {
     UserService userService = new UserService();
     CategoryTerminal categoryTerminal = new CategoryTerminal();
     BillTerminal billTerminal = new BillTerminal();
+    TransactionTerminal transactionTerminal = new TransactionTerminal();
     Scanner scanner = new Scanner(System.in);
     String inLogin;
     String inPassword;
@@ -57,8 +58,9 @@ public class UserTerminal {
             System.out.println("Что вы хотите сделать:");
             System.out.println("[1] Работа с категориями");
             System.out.println("[2] Работа с счетами");
-            System.out.println("[-3] Изменить данные пользователя");
-            System.out.println("[-4] Удалить пользователя");
+            System.out.println("[3] Работа с транзакциями");
+            System.out.println("[-4] Изменить данные пользователя");
+            System.out.println("[-5] Удалить пользователя");
             System.out.println("[0] Выйти из под пользователя");
             switch (scanner.nextInt()) {
                 case (1):
@@ -71,10 +73,14 @@ public class UserTerminal {
                     System.out.println("-----------------------------------");
                     billTerminal.billMenu(user, inPassword);
                     break;
+                case (3):
+                    System.out.println("Вы выбрали = Работа с транзакциями");
+                    System.out.println("-----------------------------------");
+                    transactionTerminal.transactionMenu(user, inPassword);
+                    break;
                 case (4):
                     System.out.println("Вы выбрали = Удалить пользователя");
                     System.out.println("-----------------------------------");
-
                 case (0):
                     return;
                 default:
@@ -82,9 +88,6 @@ public class UserTerminal {
             }
 
         }
-
-        //Реализовать
-        // работает наверное, надо прочекать userService.getUser();
     }
 
     public void getUserById() {

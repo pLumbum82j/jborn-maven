@@ -40,7 +40,7 @@ public class BillTerminal {
                     System.out.println("Вы выбрали = Посмотреть все счета");
                     System.out.println("-----------------------------------");
                     List<BillDto> billDtoList = billService.getBillAllUser(user, password);
-                    if (billDtoList.size() == 0) {
+                    if (billDtoList.isEmpty()) {
                         System.out.println("У пользователя нет счетов");
                     } else {
                         System.out.println(billDtoList);

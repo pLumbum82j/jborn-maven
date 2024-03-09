@@ -4,6 +4,7 @@ import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Bill;
 
+import javax.naming.InsufficientResourcesException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,21 @@ public class BillDao implements Dao<Bill, Integer> {
 
     @Override
     public Bill findById(Integer integer) {
-        return null;
+        Bill bill = new Bill();
+        try(Connection connection = DaoFactory.getConnection()){
+            PreparedStatement ps = connection.prepareStatement("select * from  bill where id =?");
+            ps.setInt(1, integer);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                bill.setId(rs.getInt("id"));
+                bill.setNameAccount(rs.getString("name_account"));
+                bill.setId(rs.getInt("user_id"));
+                bill.setValues(rs.getInt("values"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return bill;
     }
 
     @Override
@@ -77,7 +92,15 @@ public class BillDao implements Dao<Bill, Integer> {
 
     @Override
     public Bill update(Bill bill) {
-        return null;
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("update bill set values = ? where id = ?");
+            ps.setInt(1, bill.getValues());
+            ps.setInt(2, bill.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return bill;
     }
 
     @Override
@@ -110,5 +133,21 @@ public class BillDao implements Dao<Bill, Integer> {
             throw new RuntimeException(e);
         }
         return resultAccout;
+    }
+
+    public Integer getBillId(Bill bill) {
+        Integer result = null;
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("select id from bill where name_account = ? and user_id = ?");
+            ps.setString(1, bill.getNameAccount());
+            ps.setInt(2, bill.getUserId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 }

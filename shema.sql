@@ -27,10 +27,10 @@ CREATE TABLE transaction (
                              spending_category_id bigint REFERENCES spending_category(id) NOT NULL
 );
 
-insert into users(first_name, last_name, login, email, password) VALUES ('Илья', 'Смирнов', 'pb82', 'pb82@mail.ru', '202cb962ac59075b964b07152d234b70');
-insert into users(first_name, last_name, login, email, password) VALUES ('Наталья', 'Смирнова', 'nata', 'natastar@mail.ru', '202cb962ac59075b964b07152d234b70');
-insert into users(first_name, last_name, login, email, password) VALUES ('Иван', 'Штепа', 'shtepa', 'shtepa87@yandex.ru', '202cb962ac59075b964b07152d234b70');
-insert into users(first_name, last_name, login, email, password) VALUES ('Павел', 'Цемежевский', 'pahan', 'pasha66@gmail.com', '202cb962ac59075b964b07152d234b70');
+insert into users(first_name, last_name, login, email, password) VALUES ('Илья', 'Смирнов', 'pb82', 'pb82@mail.ru', 'c4ca4238a0b923820dcc509a6f75849b');
+insert into users(first_name, last_name, login, email, password) VALUES ('Наталья', 'Смирнова', 'nata', 'natastar@mail.ru', 'c4ca4238a0b923820dcc509a6f75849b');
+insert into users(first_name, last_name, login, email, password) VALUES ('Иван', 'Штепа', 'shtepa', 'shtepa87@yandex.ru', 'c4ca4238a0b923820dcc509a6f75849b');
+insert into users(first_name, last_name, login, email, password) VALUES ('Павел', 'Цемежевский', 'pahan', 'pasha66@gmail.com', 'c4ca4238a0b923820dcc509a6f75849b');
 
 insert into spending_category(category_name) VALUES ('Продукты');
 insert into spending_category(category_name) VALUES ('Зарплата');

@@ -4,6 +4,7 @@ import ru.maven.jborn.dao.domain.BillDao;
 import ru.maven.jborn.dao.domain.UserDao;
 import ru.maven.jborn.mappers.BillMapper;
 import ru.maven.jborn.models.Bill;
+import ru.maven.jborn.models.Transaction;
 import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.UserDto;
@@ -46,11 +47,25 @@ public class BillService {
         List<Bill> resultList = tempListBillAll.stream()
                 .filter(x -> Objects.equals(x.getUserId(), tempUser.getId()))
                 .collect(Collectors.toList());
-        if (resultList.size() == 0) {
+        if (resultList.isEmpty()) {
             return result;
         } else {
             return resultList.stream().map(o -> billMapper.billToBillDto(o)).collect(Collectors.toList());
         }
+    }
+
+    public BillDto updateBill(Transaction transaction) {
+        Bill bill = new Bill();
+        bill.setNameAccount(transaction.getNameAccount());
+        bill.setUserId(transaction.getUserId());
+        bill.setId(billDao.getBillId(bill));
+        Integer balance = billDao.findById(bill.getId()).getValues();
+        if (balance > transaction.getValues()) {
+            bill.setValues(balance + transaction.getValues());
+        } else {
+            return new BillDto();
+        }
+        return billMapper.billToBillDto(billDao.update(bill));
     }
 
     public boolean removeBillUser(UserDto user, String password, String nameBill) {
