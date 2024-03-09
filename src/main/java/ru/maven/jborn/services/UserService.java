@@ -1,0 +1,41 @@
+package ru.maven.jborn.services;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import ru.maven.jborn.dao.domain.UserDao;
+import ru.maven.jborn.mappers.UserMapper;
+import ru.maven.jborn.models.User;
+import ru.maven.jborn.models.dto.UserDto;
+
+public class UserService {
+    private final UserMapper userMapper = new UserMapper();
+    private final UserDao userDao = UserDao.getUserDao();
+
+    public UserDto createUser(String firstName, String lastName, String login, String email, String password) {
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setLogin(login);
+        user.setEmail(email);
+        user.setPassword(DigestUtils.md5Hex(password));
+        if (userDao.duplicateCheck(user) > 0) {
+            return userMapper.userToUserDto(user);
+        } else {
+            return userMapper.userToUserDto(userDao.insert(user));
+        }
+    }
+
+    public UserDto getUser(String login, String password) {
+        User user = userDao.getUser(login, password);
+        if (user.getId() == null) {
+            return new UserDto();
+        } else {
+            return userMapper.userToUserDto(user);
+        }
+    }
+
+    public UserDto getUserById(Integer id) {
+        return userMapper.userToUserDto(userDao.findById(id));
+    }
+
+
+}

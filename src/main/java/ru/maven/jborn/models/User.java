@@ -1,23 +1,24 @@
-package ru.maven.jborn;
+package ru.maven.jborn.models;
 
 import java.util.Map;
 
 public class User {
-
+    private Integer id;
     private String firstName;
     private String lastName;
     private String login;
     private String email;
     private String password;
-    private Map<Integer, Integer> account;
+    private Map<String, Integer> account;
 
-    public User(String firstName, String lastName, String login, String email, String password, Map<Integer, Integer> account) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.login = login;
-        this.email = email;
-        this.password = password;
-        this.account = account;
+    public User(){}
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -40,7 +41,7 @@ public class User {
         return password;
     }
 
-    public Map<Integer, Integer> getAccount() {
+    public Map<String, Integer> getAccount() {
         return account;
     }
 
@@ -64,7 +65,7 @@ public class User {
         this.password = password;
     }
 
-    public void setAccount(Map<Integer, Integer> account) {
+    public void setAccount(Map<String, Integer> account) {
         this.account = account;
     }
 
