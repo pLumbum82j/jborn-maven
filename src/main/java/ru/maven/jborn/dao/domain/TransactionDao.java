@@ -109,18 +109,18 @@ public class TransactionDao implements Dao<Transaction, Integer> {
 
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection
-                    .prepareStatement("insert into transaction(DATE, NAME_ACCOUNT_ID, VALUES, SPENDING_CATEGORY_ID) VALUES ('2024-01-01 00:00:00.000000',?,?,?)");
-            //  ps.setString(1, ("java.sql.Date) Date.from(Instant.now())");
-            ps.setInt(1, nameAccountId);
-            ps.setInt(2, transaction.getValues());
-            ps.setInt(3, onlyCategory.get(0).getId());
+                    .prepareStatement("insert into transaction(DATE, NAME_ACCOUNT_ID, VALUES, SPENDING_CATEGORY_ID) VALUES (?,?,?,?)");
+            ps.setObject(1, transaction.getDate(), Types.DATE);
+            ps.setInt(2, nameAccountId);
+            ps.setInt(3, transaction.getValues());
+            ps.setInt(4, onlyCategory.get(0).getId());
             ps.executeUpdate();
 
             PreparedStatement psId = connection.prepareStatement("select id from transaction " +
-                    "where date = '2024-01-01 00:00:00.000000' and name_account_id = ? and values = ?");
-            // psId.setDate(1, (java.sql.Date) Date.from(Instant.now()));
-            psId.setInt(1, nameAccountId);
-            psId.setInt(2, transaction.getValues());
+                    "where date = ? and name_account_id = ? and values = ?");
+            psId.setObject(1, transaction.getDate(), Types.DATE);
+            psId.setInt(2, nameAccountId);
+            psId.setInt(3, transaction.getValues());
             ResultSet rs = psId.executeQuery();
             while (rs.next()) {
                 transaction.setId(rs.getInt("id"));
