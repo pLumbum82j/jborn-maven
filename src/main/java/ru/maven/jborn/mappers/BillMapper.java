@@ -7,6 +7,9 @@ public class BillMapper {
 
     public BillDto billToBillDto(Bill bill) {
         BillDto billDto = new BillDto();
+        if (bill == null) {
+            return billDto;
+        }
         billDto.setId(bill.getId());
         billDto.setNameAccounts(bill.getNameAccount());
         billDto.setValues(bill.getValues());

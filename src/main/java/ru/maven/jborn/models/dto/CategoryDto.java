@@ -1,8 +1,8 @@
 package ru.maven.jborn.models.dto;
 
 public class CategoryDto {
-    Integer id;
-    String categoryName;
+    private Integer id;
+    private  String categoryName;
 
     public Integer getId() {
         return id;

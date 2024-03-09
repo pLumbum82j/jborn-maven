@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class CategoryService {
 
-    CategoryMapper categoryMapper = new CategoryMapper();
-    CategoryDao categoryDao = CategoryDao.getCategoryDao();
+    private final CategoryMapper categoryMapper = new CategoryMapper();
+    private final CategoryDao categoryDao = CategoryDao.getCategoryDao();
 
     public CategoryDto createCategory(String name) {
         Category category = new Category();
@@ -26,7 +26,7 @@ public class CategoryService {
             return new ArrayList<>();
         } else {
             tempListAllCategory = categoryDao.findByAll();
-            return tempListAllCategory.stream().map(cat -> categoryMapper.categoryToCategoryDto(cat)).collect(Collectors.toList());
+            return tempListAllCategory.stream().map(categoryMapper::categoryToCategoryDto).collect(Collectors.toList());
         }
     }
 

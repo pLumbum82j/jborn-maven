@@ -4,7 +4,6 @@ import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Bill;
 
-import javax.naming.InsufficientResourcesException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,11 +28,11 @@ public class BillDao implements Dao<Bill, Integer> {
     @Override
     public Bill findById(Integer integer) {
         Bill bill = new Bill();
-        try(Connection connection = DaoFactory.getConnection()){
+        try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from  bill where id =?");
             ps.setInt(1, integer);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 bill.setId(rs.getInt("id"));
                 bill.setNameAccount(rs.getString("name_account"));
                 bill.setId(rs.getInt("user_id"));
@@ -119,7 +118,7 @@ public class BillDao implements Dao<Bill, Integer> {
     }
 
     public Map<Integer, String> checkDuplicateInvoiceAndCount(Bill bill) {
-        Map<Integer, String> resultAccout = new HashMap<>();
+        Map<Integer, String> resultAccount = new HashMap<>();
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select id, name_account from bill where user_id = ?");
             ps.setInt(1, bill.getUserId());
@@ -127,12 +126,12 @@ public class BillDao implements Dao<Bill, Integer> {
             while (rs.next()) {
                 Integer id = rs.getInt("id");
                 String name = rs.getString("name_account");
-                resultAccout.put(id, name);
+                resultAccount.put(id, name);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return resultAccout;
+        return resultAccount;
     }
 
     public Integer getBillId(Bill bill) {

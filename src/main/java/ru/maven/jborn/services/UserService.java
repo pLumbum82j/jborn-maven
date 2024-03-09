@@ -7,8 +7,8 @@ import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.UserDto;
 
 public class UserService {
-    UserMapper userMapper = new UserMapper();
-    UserDao userDao = UserDao.getUserDao();
+    private final UserMapper userMapper = new UserMapper();
+    private final UserDao userDao = UserDao.getUserDao();
 
     public UserDto createUser(String firstName, String lastName, String login, String email, String password) {
         User user = new User();
@@ -25,8 +25,7 @@ public class UserService {
     }
 
     public UserDto getUser(String login, String password) {
-        User user = new User();
-        user = userDao.getUser(login, password);
+        User user = userDao.getUser(login, password);
         if (user.getId() == null) {
             return new UserDto();
         } else {

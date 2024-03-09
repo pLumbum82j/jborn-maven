@@ -1,11 +1,11 @@
 package ru.maven.jborn.models.dto;
 
 public class UserDto {
-    Integer id;
-    String firstName;
-    String lastName;
-    String login;
-    String email;
+    private  Integer id;
+    private  String firstName;
+    private   String lastName;
+    private  String login;
+    private  String email;
 
     public Integer getId() {
         return id;

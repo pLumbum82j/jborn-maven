@@ -10,12 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TransactionDao implements Dao<Transaction, Integer> {
     private static TransactionDao transactionDao;
-    CategoryDao categoryDao = CategoryDao.getCategoryDao();
-    BillDao billDao = BillDao.getBillDao();
+    private final  CategoryDao categoryDao = CategoryDao.getCategoryDao();
 
     public static TransactionDao getTransactionDao() {
         if (transactionDao == null) {
@@ -105,7 +103,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
         }
 
         List<Category> categoryList = categoryDao.findByAll();
-        List<Category> onlyCategory = categoryList.stream().filter(x -> x.getCategoryName().equals(transaction.getCategoryName())).collect(Collectors.toList());
+        Integer onlyCategory = categoryList.stream().filter(x -> x.getCategoryName().equals(transaction.getCategoryName())).findFirst().get().getId();
 
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection
@@ -113,7 +111,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
             ps.setObject(1, transaction.getDate(), Types.DATE);
             ps.setInt(2, nameAccountId);
             ps.setInt(3, transaction.getValues());
-            ps.setInt(4, onlyCategory.get(0).getId());
+            ps.setInt(4, onlyCategory);
             ps.executeUpdate();
 
             PreparedStatement psId = connection.prepareStatement("select id from transaction " +
@@ -137,11 +135,11 @@ public class TransactionDao implements Dao<Transaction, Integer> {
     }
 
     @Override
-    public boolean delete(Integer integer) {
+    public boolean delete(Integer id) {
         boolean result = false;
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("delete from transaction where id =?");
-            ps.setInt(1, integer);
+            ps.setInt(1, id);
             int check = ps.executeUpdate();
             if (check == 1) {
                 result = true;

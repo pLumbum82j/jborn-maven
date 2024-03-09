@@ -17,15 +17,6 @@ public class User {
         this.id = id;
     }
 
-    public User(String firstName, String lastName, String login, String email, String password, Map<String, Integer> account) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.login = login;
-        this.email = email;
-        this.password = password;
-        this.account = account;
-    }
-
     public Integer getId() {
         return id;
     }

@@ -3,12 +3,12 @@ package ru.maven.jborn.models.dto;
 import java.util.Date;
 
 public class TransactionDto {
-    Integer id;
-    Date date;
-    String nameAccount;
-    Integer values;
-    String spendingCategoryName;
-    Integer userId;
+    private  Integer id;
+    private  Date date;
+    private String nameAccount;
+    private  Integer values;
+    private String spendingCategoryName;
+    private  Integer userId;
 
     public Integer getUserId() {
         return userId;

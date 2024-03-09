@@ -1,6 +1,5 @@
 package ru.maven.jborn.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface Dao<DOMAIN, ID> {

@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TransactionService {
-    TransactionDao transactionDao = TransactionDao.getTransactionDao();
-    TransactionMapper transactionMapper = new TransactionMapper();
-    BillService billService = new BillService();
+    private final TransactionDao transactionDao = TransactionDao.getTransactionDao();
+    private final TransactionMapper transactionMapper = new TransactionMapper();
+    private final BillService billService = new BillService();
 
     public List<TransactionDto> getAllTransactionUser(UserDto user) {
         List<Transaction> transactionListAllUsers = transactionDao.findByAll();
         return transactionListAllUsers.stream().filter(x -> x.getUserId().equals(user.getId()))
-                .map(o -> transactionMapper.transactionToTransactionDto(o)).collect(Collectors.toList());
+                .map(transactionMapper::transactionToTransactionDto).collect(Collectors.toList());
     }
 
     public TransactionDto getTransactionUserById(UserDto userDto, Integer id) {

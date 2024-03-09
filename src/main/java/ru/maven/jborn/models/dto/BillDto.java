@@ -2,8 +2,8 @@ package ru.maven.jborn.models.dto;
 
 public class BillDto {
 
-    public Integer id;
-    public String nameAccount;
+    private Integer id;
+    private String nameAccount;
 
     public Integer values;
 

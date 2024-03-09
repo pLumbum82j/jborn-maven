@@ -7,6 +7,9 @@ public class TransactionMapper {
 
     public TransactionDto transactionToTransactionDto(Transaction transaction) {
         TransactionDto transactionDto = new TransactionDto();
+        if (transaction == null) {
+            return transactionDto;
+        }
         transactionDto.setId(transaction.getId());
         transactionDto.setDate(transaction.getDate());
         transactionDto.setNameAccount(transaction.getNameAccount());
