@@ -22,15 +22,15 @@ public class CategoryDao implements Dao<Category, Integer> {
     }
 
     @Override
-    public Category findById(Integer integer) {
+    public Category findById(Integer id) {
         Category category = new Category();
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select id, category_name from spending_category where id = ?");
-            ps.setInt(1, integer);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 category.setId(rs.getInt("id"));
-                category.setCategoryName("categoryName");
+                category.setCategoryName(rs.getString("category_name"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -81,11 +81,11 @@ public class CategoryDao implements Dao<Category, Integer> {
     }
 
     @Override
-    public boolean delete(Integer integer) {
+    public boolean delete(Integer id) {
         boolean result = false;
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("delete from spending_category where id = ?");
-            ps.setInt(1, integer);
+            ps.setInt(1, id);
             int check = ps.executeUpdate();
             if (check == 1) {
                 result = true;

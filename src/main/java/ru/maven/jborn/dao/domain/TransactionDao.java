@@ -2,7 +2,6 @@ package ru.maven.jborn.dao.domain;
 
 import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
-import ru.maven.jborn.models.Category;
 import ru.maven.jborn.models.Transaction;
 
 import java.sql.*;
@@ -13,7 +12,7 @@ import java.util.Map;
 
 public class TransactionDao implements Dao<Transaction, Integer> {
     private static TransactionDao transactionDao;
-    private final  CategoryDao categoryDao = CategoryDao.getCategoryDao();
+    private final CategoryDao categoryDao = CategoryDao.getCategoryDao();
 
     public static TransactionDao getTransactionDao() {
         if (transactionDao == null) {
@@ -27,7 +26,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
 
 
     @Override
-    public Transaction findById(Integer integer) {
+    public Transaction findById(Integer id) {
         Transaction transaction = new Transaction();
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select tr.id, tr.date, b.name_account, tr.values, sc.category_name, u.id as userId " +
@@ -36,7 +35,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
                     "join public.spending_category sc on sc.id = tr.spending_category_id " +
                     "join public.users u on b.user_id = u.id " +
                     "where tr.id = ?");
-            ps.setInt(1, integer);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 transaction.setId(rs.getInt("id"));
@@ -81,29 +80,11 @@ public class TransactionDao implements Dao<Transaction, Integer> {
     @Override
     public Transaction insert(Transaction transaction) {
 
-        Map<String, Integer> billUser = new HashMap<>();
-        try (Connection connection = DaoFactory.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select b. id, b.name_account from bill as b " +
-                    "join users as u on b.user_id = u.id where u.id = ?");
-            ps.setInt(1, transaction.getUserId());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String nameAccount = rs.getString("name_account");
-                Integer idAccount = rs.getInt("id");
-                billUser.put(nameAccount, idAccount);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        int nameAccountId = 0;
-        for (Map.Entry<String, Integer> ser : billUser.entrySet()) {
-            if (ser.getKey().equals(transaction.getNameAccount())) {
-                nameAccountId = ser.getValue();
-            }
-        }
+        int nameAccountId = getNameAccountId(transaction);
 
-        List<Category> categoryList = categoryDao.findByAll();
-        Integer onlyCategory = categoryList.stream().filter(x -> x.getCategoryName().equals(transaction.getCategoryName())).findFirst().get().getId();
+        Integer onlyCategory = categoryDao.findByAll().stream()
+                .filter(x -> x.getCategoryName().equals(transaction.getCategoryName()))
+                .findFirst().get().getId();
 
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection
@@ -148,6 +129,30 @@ public class TransactionDao implements Dao<Transaction, Integer> {
             throw new RuntimeException(e);
         }
         return result;
+    }
+
+    private int getNameAccountId(Transaction transaction) {
+        Map<String, Integer> billUser = new HashMap<>();
+        try (Connection connection = DaoFactory.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("select b. id, b.name_account from bill as b " +
+                    "join users as u on b.user_id = u.id where u.id = ?");
+            ps.setInt(1, transaction.getUserId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String nameAccount = rs.getString("name_account");
+                Integer idAccount = rs.getInt("id");
+                billUser.put(nameAccount, idAccount);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        int nameAccountId = 0;
+        for (Map.Entry<String, Integer> ser : billUser.entrySet()) {
+            if (ser.getKey().equals(transaction.getNameAccount())) {
+                nameAccountId = ser.getValue();
+            }
+        }
+        return nameAccountId;
     }
 }
 

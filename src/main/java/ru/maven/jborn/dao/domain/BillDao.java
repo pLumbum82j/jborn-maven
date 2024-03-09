@@ -26,11 +26,11 @@ public class BillDao implements Dao<Bill, Integer> {
     }
 
     @Override
-    public Bill findById(Integer integer) {
+    public Bill findById(Integer id) {
         Bill bill = new Bill();
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from  bill where id =?");
-            ps.setInt(1, integer);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 bill.setId(rs.getInt("id"));
@@ -103,12 +103,12 @@ public class BillDao implements Dao<Bill, Integer> {
     }
 
     @Override
-    public boolean delete(Integer integer) {
+    public boolean delete(Integer id) {
         boolean result;
         try (Connection connection = DaoFactory.getConnection()) {
             PreparedStatement ps = connection
                     .prepareStatement("delete from bill where id = ?");
-            ps.setInt(1, integer);
+            ps.setInt(1, id);
             result = ps.execute();
 
         } catch (SQLException e) {

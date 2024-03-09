@@ -31,8 +31,7 @@ public class CategoryService {
     }
 
     public CategoryDto findCategoryById(Integer id) {
-        Category resultCategory;
-        resultCategory = categoryDao.findById(id);
+        Category resultCategory = categoryDao.findById(id);
         if (resultCategory.getId() == null) {
             return new CategoryDto();
         } else {

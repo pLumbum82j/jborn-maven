@@ -57,13 +57,13 @@ public class BillService {
         bill.setUserId(transaction.getUserId());
         bill.setId(billDao.getBillId(bill));
         Integer balance = billDao.findById(bill.getId()).getValues();
-
-        if (balance > transaction.getValues()) {
+        if ((balance + transaction.getValues()) > 0) {
             bill.setValues(balance + transaction.getValues());
+            return billMapper.billToBillDto(billDao.update(bill));
         } else {
             return new BillDto();
         }
-        return billMapper.billToBillDto(billDao.update(bill));
+
     }
 
     public boolean removeBillUser(UserDto user, String password, String nameBill) {
