@@ -24,19 +24,18 @@ public class UserServiceTest {
     UserMapper userMapper;
     @Mock
     UserDao userDao;
-    @Mock
     User user;
-    @Mock
     UserDto userDto;
 
     @Before
     public void setUp() {
-        //userMapper = new UserMapper();
-        user.setId(1);
+        user = new User();
+        userDto = new UserDto();
         user.setFirstName("Iliya");
         user.setLastName("Smirnov");
         user.setLogin("plumbum1");
         user.setEmail("pb8d2@mail.ru");
+        user.setPassword("c4ca4238a0b923820dcc509a6f75849b");
         userDto.setId(1);
         userDto.setFirstName("Iliya");
         userDto.setLastName("Smirnov");
@@ -58,11 +57,10 @@ public class UserServiceTest {
 
     @Test
     public void createUserDuplicate() {
-        int r = 1;
         when(userDao.duplicateCheck(user)).thenReturn(1);
         when(userMapper.userToUserDto(null)).thenReturn(new UserDto());
 
-        UserDto resultUser = userService.createUser("Iliya", "Smirnov", "plumbum", "pb82@mail.ru", "1");
+        UserDto resultUser = userService.createUser("Iliya", "Smirnov", "plumbum1", "pb8d2@mail.ru", "1");
 
         assertNull(resultUser.getLogin());
 

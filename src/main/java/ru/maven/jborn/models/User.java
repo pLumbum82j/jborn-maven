@@ -12,7 +12,8 @@ public class User {
     private String password;
     private Map<String, Integer> account;
 
-    public User(){}
+    public User() {
+    }
 
     public void setId(Integer id) {
         this.id = id;
