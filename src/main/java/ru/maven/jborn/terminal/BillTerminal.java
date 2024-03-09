@@ -3,12 +3,13 @@ package ru.maven.jborn.terminal;
 import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.UserDto;
 import ru.maven.jborn.services.BillService;
+import ru.maven.jborn.services.ServiceFactory;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class BillTerminal {
-    BillService billService = new BillService();
+    BillService billService = ServiceFactory.getBillService();
     Scanner scanner = new Scanner(System.in);
 
     public void billMenu(UserDto user, String password) {

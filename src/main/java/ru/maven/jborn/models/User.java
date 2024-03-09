@@ -1,6 +1,7 @@
 package ru.maven.jborn.models;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class User {
     private Integer id;
@@ -79,5 +80,33 @@ public class User {
                 ", password='" + password + '\'' +
                 ", account=" + account +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (!Objects.equals(id, user.id)) return false;
+        if (!Objects.equals(firstName, user.firstName)) return false;
+        if (!Objects.equals(lastName, user.lastName)) return false;
+        if (!Objects.equals(login, user.login)) return false;
+        if (!Objects.equals(email, user.email)) return false;
+        if (!Objects.equals(password, user.password)) return false;
+        return Objects.equals(account, user.account);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (login != null ? login.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (account != null ? account.hashCode() : 0);
+        return result;
     }
 }

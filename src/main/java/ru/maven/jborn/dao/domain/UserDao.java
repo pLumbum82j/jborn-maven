@@ -4,6 +4,7 @@ import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.User;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,22 +12,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao implements Dao<User, Integer> {
-    private static UserDao userDao;
 
-    public static UserDao getUserDao() {
-        if (userDao == null) {
-            userDao = new UserDao();
-        }
-        return userDao;
-    }
+    private final DataSource dataSource;
 
-    private UserDao() {
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public User findById(Integer id) {
         User resultUser = new User();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from users where id = ?");
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
@@ -51,7 +47,7 @@ public class UserDao implements Dao<User, Integer> {
 
     @Override
     public User insert(User user) {
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection
                     .prepareStatement("insert into users(first_name, last_name, login, email, password) VALUES (?,?,?,?,?)");
             ps.setString(1, user.getFirstName());
@@ -82,7 +78,7 @@ public class UserDao implements Dao<User, Integer> {
     @Override
     public boolean delete(Integer id) {
         boolean result;
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection
                     .prepareStatement("delete from users where id = ?");
             ps.setInt(1, id);
@@ -94,9 +90,9 @@ public class UserDao implements Dao<User, Integer> {
         return result;
     }
 
-    public int duplicateCheck(User user) {
+    public Integer duplicateCheck(User user) {
         int result = 0;
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select count(*) as count from users where login = ? or email = ?");
             ps.setString(1, user.getLogin());
             ps.setString(2, user.getEmail());
@@ -112,7 +108,7 @@ public class UserDao implements Dao<User, Integer> {
 
     public User getUser(String login, String password) {
         User user = new User();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from users where login = ? and password = ?");
             ps.setString(1, login);
             ps.setString(2, password);

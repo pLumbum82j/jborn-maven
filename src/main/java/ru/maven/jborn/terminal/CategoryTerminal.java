@@ -2,12 +2,13 @@ package ru.maven.jborn.terminal;
 
 import ru.maven.jborn.models.dto.CategoryDto;
 import ru.maven.jborn.services.CategoryService;
+import ru.maven.jborn.services.ServiceFactory;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class CategoryTerminal {
-    CategoryService categoryService = new CategoryService();
+    CategoryService categoryService = ServiceFactory.getCategoryService();
     Scanner scanner = new Scanner(System.in);
 
     public void categoryMenu() {

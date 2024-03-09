@@ -4,15 +4,16 @@ import ru.maven.jborn.models.dto.TransactionDto;
 import ru.maven.jborn.models.dto.UserDto;
 import ru.maven.jborn.services.BillService;
 import ru.maven.jborn.services.CategoryService;
+import ru.maven.jborn.services.ServiceFactory;
 import ru.maven.jborn.services.TransactionService;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class TransactionTerminal {
-    TransactionService transactionService = new TransactionService();
-    BillService billService = new BillService();
-    CategoryService categoryService = new CategoryService();
+    TransactionService transactionService = ServiceFactory.getTransactionService();
+    BillService billService = ServiceFactory.getBillService();
+    CategoryService categoryService = ServiceFactory.getCategoryService();
     Scanner scanner = new Scanner(System.in);
 
     public void transactionMenu(UserDto user, String password) {

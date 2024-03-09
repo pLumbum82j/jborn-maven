@@ -13,9 +13,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TransactionService {
-    private final TransactionDao transactionDao = TransactionDao.getTransactionDao();
-    private final TransactionMapper transactionMapper = new TransactionMapper();
-    private final BillService billService = new BillService();
+    private final TransactionDao transactionDao;
+    private final TransactionMapper transactionMapper;
+    private final BillService billService;
+
+    public TransactionService(TransactionDao transactionDao, TransactionMapper transactionMapper, BillService billService) {
+        this.transactionDao = transactionDao;
+        this.transactionMapper = transactionMapper;
+        this.billService = billService;
+    }
 
     public List<TransactionDto> getAllTransactionUser(UserDto user) {
         List<Transaction> transactionListAllUsers = transactionDao.findByAll();

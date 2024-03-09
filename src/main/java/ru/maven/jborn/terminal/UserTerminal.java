@@ -2,16 +2,17 @@ package ru.maven.jborn.terminal;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import ru.maven.jborn.models.dto.UserDto;
+import ru.maven.jborn.services.ServiceFactory;
 import ru.maven.jborn.services.UserService;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class UserTerminal {
-    UserService userService = new UserService();
-    CategoryTerminal categoryTerminal = new CategoryTerminal();
-    BillTerminal billTerminal = new BillTerminal();
-    TransactionTerminal transactionTerminal = new TransactionTerminal();
+    private final UserService userService = ServiceFactory.getUserService();
+    private final CategoryTerminal categoryTerminal = new CategoryTerminal();
+    private final  BillTerminal billTerminal = new BillTerminal();
+    private final TransactionTerminal transactionTerminal = new TransactionTerminal();
     Scanner scanner = new Scanner(System.in);
     String inLogin;
     String inPassword;

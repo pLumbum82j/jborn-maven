@@ -4,6 +4,7 @@ import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Bill;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,24 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 public class BillDao implements Dao<Bill, Integer> {
+    private static DataSource dataSource;
 
-    public static BillDao billDao;
-
-    public static BillDao getBillDao() {
-        if (billDao == null) {
-            billDao = new BillDao();
-        }
-        return billDao;
-    }
-
-    private BillDao() {
-
+    public BillDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public Bill findById(Integer id) {
         Bill bill = new Bill();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select * from  bill where id =?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -47,7 +40,7 @@ public class BillDao implements Dao<Bill, Integer> {
     @Override
     public List<Bill> findByAll() {
         List<Bill> resultAllBill = new ArrayList<>();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery("select * from bill");
             while (rs.next()) {
@@ -67,7 +60,7 @@ public class BillDao implements Dao<Bill, Integer> {
     @Override
     public Bill insert(Bill bill) {
         Bill resultBill = new Bill();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("insert into bill(name_account, user_id, values) values (?,?,?)");
             ps.setString(1, bill.getNameAccount());
             ps.setInt(2, bill.getUserId());
@@ -91,7 +84,7 @@ public class BillDao implements Dao<Bill, Integer> {
 
     @Override
     public Bill update(Bill bill) {
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("update bill set values = ? where id = ?");
             ps.setInt(1, bill.getValues());
             ps.setInt(2, bill.getId());
@@ -105,7 +98,7 @@ public class BillDao implements Dao<Bill, Integer> {
     @Override
     public boolean delete(Integer id) {
         boolean result;
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection
                     .prepareStatement("delete from bill where id = ?");
             ps.setInt(1, id);
@@ -119,7 +112,7 @@ public class BillDao implements Dao<Bill, Integer> {
 
     public Map<Integer, String> checkDuplicateInvoiceAndCount(Bill bill) {
         Map<Integer, String> resultAccount = new HashMap<>();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select id, name_account from bill where user_id = ?");
             ps.setInt(1, bill.getUserId());
             ResultSet rs = ps.executeQuery();
@@ -136,7 +129,7 @@ public class BillDao implements Dao<Bill, Integer> {
 
     public Integer getBillId(Bill bill) {
         Integer result = null;
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select id from bill where name_account = ? and user_id = ?");
             ps.setString(1, bill.getNameAccount());
             ps.setInt(2, bill.getUserId());

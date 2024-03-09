@@ -15,9 +15,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BillService {
-    private final BillDao billDao = BillDao.getBillDao();
-    private final BillMapper billMapper = new BillMapper();
-    private final UserDao userDao = UserDao.getUserDao();
+    private final BillDao billDao;
+    private final BillMapper billMapper;
+    private final UserDao userDao;
+
+    public BillService(BillDao billDao, BillMapper billMapper, UserDao userDao) {
+        this.billDao = billDao;
+        this.billMapper = billMapper;
+        this.userDao = userDao;
+    }
 
     public BillDto createBill(UserDto user, String password, String nameAccount) {
         Bill bill = new Bill();
@@ -75,7 +81,7 @@ public class BillService {
     }
 
     private Integer checkDuplicateInvoiceAndCount(Bill bill) {
-        Map<Integer, String> tempAccountUser = BillDao.billDao.checkDuplicateInvoiceAndCount(bill);
+        Map<Integer, String> tempAccountUser = billDao.checkDuplicateInvoiceAndCount(bill);
         boolean name = tempAccountUser.containsValue(bill.getNameAccount());
         int size = tempAccountUser.size();
         if (size >= 5) {
