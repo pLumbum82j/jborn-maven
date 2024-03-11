@@ -42,6 +42,4 @@ public class UserService {
     public UserDto getUserById(Integer id) {
         return userMapper.userToUserDto(userDao.findById(id));
     }
-
-
 }

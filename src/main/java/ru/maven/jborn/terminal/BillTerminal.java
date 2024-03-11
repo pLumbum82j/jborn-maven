@@ -64,12 +64,8 @@ public class BillTerminal {
                     return;
                 default:
                     System.out.println("Такого варианта выбора нет");
-
-
             }
-
         }
-
     }
 
     private String checkNull(String string) {

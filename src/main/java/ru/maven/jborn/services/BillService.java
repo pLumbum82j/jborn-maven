@@ -47,8 +47,7 @@ public class BillService {
     public List<BillDto> getBillAllUser(UserDto user, String password) {
         List<BillDto> result = new ArrayList<>();
         User tempUser = userDao.getUser(user.getLogin(), password);
-        List<Bill> tempListBillAll;
-        tempListBillAll = billDao.findByAll();
+        List<Bill> tempListBillAll = billDao.findByAll();
         List<Bill> resultList = tempListBillAll.stream()
                 .filter(x -> x.getUserId().equals(tempUser.getId()))
                 .collect(Collectors.toList());
@@ -69,7 +68,6 @@ public class BillService {
         } else {
             return new BillDto();
         }
-
     }
 
     public boolean removeBillUser(UserDto user, String password, String nameBill) {

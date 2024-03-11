@@ -1,5 +1,7 @@
 package ru.maven.jborn.models;
 
+import java.util.Objects;
+
 public class Bill {
     private Integer id;
     private String nameAccount;
@@ -46,5 +48,18 @@ public class Bill {
                 ", userId=" + userId +
                 ", values=" + values +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bill bill = (Bill) o;
+        return Objects.equals(id, bill.id) && Objects.equals(nameAccount, bill.nameAccount) && Objects.equals(userId, bill.userId) && Objects.equals(values, bill.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nameAccount, userId, values);
     }
 }

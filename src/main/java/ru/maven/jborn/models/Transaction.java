@@ -1,6 +1,7 @@
 package ru.maven.jborn.models;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Transaction {
    private Integer id;
@@ -68,5 +69,18 @@ public class Transaction {
               ", spendingCategoryName=" + categoryName +
               ", userId=" + userId +
               '}';
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Transaction that = (Transaction) o;
+      return Objects.equals(id, that.id) && Objects.equals(date, that.date) && Objects.equals(nameAccount, that.nameAccount) && Objects.equals(values, that.values) && Objects.equals(categoryName, that.categoryName) && Objects.equals(userId, that.userId);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(id, date, nameAccount, values, categoryName, userId);
    }
 }

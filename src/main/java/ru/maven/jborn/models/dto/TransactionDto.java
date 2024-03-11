@@ -1,14 +1,15 @@
 package ru.maven.jborn.models.dto;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class TransactionDto {
-    private  Integer id;
-    private  Date date;
+    private Integer id;
+    private Date date;
     private String nameAccount;
-    private  Integer values;
+    private Integer values;
     private String spendingCategoryName;
-    private  Integer userId;
+    private Integer userId;
 
     public Integer getUserId() {
         return userId;
@@ -67,5 +68,18 @@ public class TransactionDto {
                 ", values=" + values +
                 ", spendingCategoryIName=" + spendingCategoryName +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransactionDto that = (TransactionDto) o;
+        return Objects.equals(id, that.id) && Objects.equals(date, that.date) && Objects.equals(nameAccount, that.nameAccount) && Objects.equals(values, that.values) && Objects.equals(spendingCategoryName, that.spendingCategoryName) && Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, date, nameAccount, values, spendingCategoryName, userId);
     }
 }

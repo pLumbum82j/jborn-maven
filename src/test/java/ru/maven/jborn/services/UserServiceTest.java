@@ -44,7 +44,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUser() {
+    public void createUser_Success() {
         when(userDao.duplicateCheck(user)).thenReturn(0);
         when(userDao.insert(user)).thenReturn(anyObject());
         when(userMapper.userToUserDto(user)).thenReturn(userDto);
@@ -56,7 +56,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUserDuplicate() {
+    public void createUser_Duplicate() {
         when(userDao.duplicateCheck(user)).thenReturn(1);
         when(userMapper.userToUserDto(null)).thenReturn(new UserDto());
 
@@ -67,10 +67,38 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUser() {
+    public void getUser_Success() {
+        String login = user.getLogin();
+        String password = user.getPassword();
+        user.setId(1);
+        when(userDao.getUser(login, password)).thenReturn(user);
+        when(userMapper.userToUserDto(user)).thenReturn(userDto);
+
+        UserDto resultUser = userService.getUser(login, password);
+
+        assertEquals(resultUser.getFirstName(), user.getFirstName());
+        assertEquals(resultUser.getLogin(), user.getLogin());
     }
 
     @Test
-    public void getUserById() {
+    public void getUser_NotFound() {
+        String login = user.getLogin();
+        String password = user.getPassword();
+        when(userDao.getUser(login, password)).thenReturn(user);
+
+        UserDto resultUser = userService.getUser(login, password);
+
+        assertNull(resultUser.getLogin());
+    }
+
+    @Test
+    public void getUserById_Success() {
+        Integer id = 1;
+        when(userDao.findById(id)).thenReturn(anyObject());
+        when(userMapper.userToUserDto(user)).thenReturn(userDto);
+
+        UserDto resultUser = userService.getUserById(id);
+
+        assertEquals(resultUser, userDto);
     }
 }
