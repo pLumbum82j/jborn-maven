@@ -37,7 +37,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
                 transaction.setId(rs.getInt("id"));
                 transaction.setDate(rs.getDate("date"));
                 transaction.setNameAccount(rs.getString("name_account"));
-                transaction.setValues(rs.getInt("values"));
+                transaction.setValues(rs.getBigDecimal("values"));
                 transaction.setCategoryName(rs.getString("category_name"));
                 transaction.setUserId(rs.getInt("userId"));
             }
@@ -62,7 +62,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
                 transaction.setId(rs.getInt("id"));
                 transaction.setDate(rs.getDate("date"));
                 transaction.setNameAccount(rs.getString("name_account"));
-                transaction.setValues(rs.getInt("values"));
+                transaction.setValues(rs.getBigDecimal("values"));
                 transaction.setCategoryName(rs.getString("category_name"));
                 transaction.setUserId(rs.getInt("userid"));
                 transactionsAll.add(transaction);
@@ -87,7 +87,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
                     .prepareStatement("insert into transaction(DATE, NAME_ACCOUNT_ID, VALUES, SPENDING_CATEGORY_ID) VALUES (?,?,?,?)");
             ps.setObject(1, transaction.getDate(), Types.DATE);
             ps.setInt(2, nameAccountId);
-            ps.setInt(3, transaction.getValues());
+            ps.setBigDecimal(3, transaction.getValues());
             ps.setInt(4, onlyCategory);
             ps.executeUpdate();
 
@@ -95,7 +95,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
                     "where date = ? and name_account_id = ? and values = ?");
             psId.setObject(1, transaction.getDate(), Types.DATE);
             psId.setInt(2, nameAccountId);
-            psId.setInt(3, transaction.getValues());
+            psId.setBigDecimal(3, transaction.getValues());
             ResultSet rs = psId.executeQuery();
             while (rs.next()) {
                 transaction.setId(rs.getInt("id"));

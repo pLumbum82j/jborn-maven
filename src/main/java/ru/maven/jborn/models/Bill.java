@@ -1,12 +1,14 @@
 package ru.maven.jborn.models;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Bill {
     private Integer id;
     private String nameAccount;
     private Integer userId;
-    private Integer values;
+   // private Integer values;
+    private BigDecimal values;
 
     public Integer getId() {
         return id;
@@ -32,11 +34,11 @@ public class Bill {
         this.userId = userId;
     }
 
-    public Integer getValues() {
+    public BigDecimal getValues() {
         return values;
     }
 
-    public void setValues(Integer values) {
+    public void setValues(BigDecimal values) {
         this.values = values;
     }
 

@@ -1,5 +1,6 @@
 package ru.maven.jborn.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
@@ -7,7 +8,8 @@ public class Transaction {
    private Integer id;
    private Date date;
    private String nameAccount;
-   private Integer values;
+   //private Integer values;
+   private BigDecimal values;
    private String categoryName;
    private Integer userId;
 
@@ -43,11 +45,11 @@ public class Transaction {
       this.nameAccount = nameAccount;
    }
 
-   public Integer getValues() {
+   public BigDecimal getValues() {
       return values;
    }
 
-   public void setValues(Integer values) {
+   public void setValues(BigDecimal values) {
       this.values = values;
    }
 

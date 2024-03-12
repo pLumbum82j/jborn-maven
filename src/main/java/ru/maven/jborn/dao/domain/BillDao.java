@@ -29,7 +29,7 @@ public class BillDao implements Dao<Bill, Integer> {
                 bill.setId(rs.getInt("id"));
                 bill.setNameAccount(rs.getString("name_account"));
                 bill.setId(rs.getInt("user_id"));
-                bill.setValues(rs.getInt("values"));
+                bill.setValues(rs.getBigDecimal("values"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -48,7 +48,7 @@ public class BillDao implements Dao<Bill, Integer> {
                 bill.setId(rs.getInt("id"));
                 bill.setUserId(rs.getInt("user_id"));
                 bill.setNameAccount(rs.getString("name_account"));
-                bill.setValues(rs.getInt("values"));
+                bill.setValues(rs.getBigDecimal("values"));
                 resultAllBill.add(bill);
             }
         } catch (SQLException e) {
@@ -64,7 +64,7 @@ public class BillDao implements Dao<Bill, Integer> {
             PreparedStatement ps = connection.prepareStatement("insert into bill(name_account, user_id, values) values (?,?,?)");
             ps.setString(1, bill.getNameAccount());
             ps.setInt(2, bill.getUserId());
-            ps.setInt(3, bill.getValues());
+            ps.setBigDecimal(3, bill.getValues());
             ps.executeUpdate();
             PreparedStatement psGetId = connection.prepareStatement("select id from bill where user_id = ? and name_account = ?");
             psGetId.setInt(1, bill.getUserId());
@@ -86,7 +86,7 @@ public class BillDao implements Dao<Bill, Integer> {
     public Bill update(Bill bill) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("update bill set values = ? where id = ?");
-            ps.setInt(1, bill.getValues());
+            ps.setBigDecimal(1, bill.getValues());
             ps.setInt(2, bill.getId());
             ps.executeUpdate();
         } catch (SQLException e) {

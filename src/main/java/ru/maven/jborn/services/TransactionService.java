@@ -7,6 +7,7 @@ import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.TransactionDto;
 import ru.maven.jborn.models.dto.UserDto;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,7 @@ public class TransactionService {
         }
     }
 
-    public TransactionDto createTransaction(UserDto userDto, String nameAccount, Integer values, String categoryName) {
+    public TransactionDto createTransaction(UserDto userDto, String nameAccount, BigDecimal values, String categoryName) {
         Transaction transaction = new Transaction();
         transaction.setDate(Date.from(Instant.now()));
         transaction.setNameAccount(nameAccount);

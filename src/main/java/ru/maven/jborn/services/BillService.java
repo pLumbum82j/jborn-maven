@@ -9,6 +9,7 @@ import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.UserDto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class BillService {
         User tempUser = userDao.getUser(user.getLogin(), password);
         bill.setNameAccount(nameAccount);
         bill.setUserId(tempUser.getId());
-        bill.setValues(0);
+        bill.setValues(new BigDecimal(0));
         int checkDuplicate = checkDuplicateInvoiceAndCount(bill);
         if (checkDuplicate == 1) {
             return new BillDto();
@@ -61,9 +62,9 @@ public class BillService {
         bill.setNameAccount(transaction.getNameAccount());
         bill.setUserId(transaction.getUserId());
         bill.setId(billDao.getBillId(bill));
-        Integer balance = billDao.findById(bill.getId()).getValues();
-        if ((balance + transaction.getValues()) > 0) {
-            bill.setValues(balance + transaction.getValues());
+        BigDecimal balance = billDao.findById(bill.getId()).getValues();
+        if ((balance.add(transaction.getValues()).compareTo(BigDecimal.ZERO)) > -1) {
+            bill.setValues(balance.add(transaction.getValues()));
             return billMapper.billToBillDto(billDao.update(bill));
         } else {
             return new BillDto();

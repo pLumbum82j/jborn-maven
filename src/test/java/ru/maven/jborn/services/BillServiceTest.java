@@ -10,17 +10,19 @@ import ru.maven.jborn.dao.domain.BillDao;
 import ru.maven.jborn.dao.domain.UserDao;
 import ru.maven.jborn.mappers.BillMapper;
 import ru.maven.jborn.models.Bill;
+import ru.maven.jborn.models.Transaction;
 import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.UserDto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,8 +37,11 @@ public class BillServiceTest {
     UserDao userDao;
     User user;
     UserDto userDto;
+    BigDecimal value;
     Bill bill;
     BillDto billDto;
+    List<Bill> billList;
+    Map<Integer, String> billCheckDuplicate;
 
     @Before
     public void setUp() {
@@ -44,6 +49,10 @@ public class BillServiceTest {
         userDto = new UserDto();
         bill = new Bill();
         billDto = new BillDto();
+        billList = new ArrayList<>();
+        billCheckDuplicate = new HashMap<>();
+        value = new BigDecimal(0);
+        user.setId(1);
         user.setFirstName("Iliya");
         user.setLastName("Smirnov");
         user.setLogin("plumbum1");
@@ -56,17 +65,16 @@ public class BillServiceTest {
         userDto.setEmail("pb8d2@mail.ru");
         bill.setUserId(user.getId());
         bill.setNameAccount("Сбердебанк");
-        bill.setValues(0);
+        bill.setValues(value);
         billDto.setId(1);
         billDto.setNameAccounts("Сбердебанк");
-        billDto.setValues(0);
+        billDto.setValues(value);
     }
 
     @Test
     public void createBill_Success() {
-        Map<Integer, String> billZero = new HashMap<>();
         when(userDao.getUser(userDto.getLogin(), "1")).thenReturn(user);
-        when(billDao.checkDuplicateInvoiceAndCount(bill)).thenReturn(billZero);
+        when(billDao.checkDuplicateInvoiceAndCount(bill)).thenReturn(billCheckDuplicate);
         when(billDao.insert(bill)).thenReturn(bill);
         when(billMapper.billToBillDto(bill)).thenReturn(billDto);
 
@@ -77,10 +85,9 @@ public class BillServiceTest {
 
     @Test
     public void createBill_Duplicate() {
-        Map<Integer, String> billDuplicateName = new HashMap<>();
-        billDuplicateName.put(1, bill.getNameAccount());
+        billCheckDuplicate.put(1, bill.getNameAccount());
         when(userDao.getUser(userDto.getLogin(), "1")).thenReturn(user);
-        when(billDao.checkDuplicateInvoiceAndCount(bill)).thenReturn(billDuplicateName);
+        when(billDao.checkDuplicateInvoiceAndCount(bill)).thenReturn(billCheckDuplicate);
         when(billDao.insert(bill)).thenReturn(bill);
         when(billMapper.billToBillDto(bill)).thenReturn(billDto);
 
@@ -91,14 +98,13 @@ public class BillServiceTest {
 
     @Test
     public void createBill_MoreThanFive() {
-        Map<Integer, String> billList = new HashMap<>();
-        billList.put(1, "Счёт №1");
-        billList.put(2, "Счёт №2");
-        billList.put(3, "Счёт №3");
-        billList.put(4, "Счёт №4");
-        billList.put(5, "Счёт №5");
+        billCheckDuplicate.put(1, "Счёт №1");
+        billCheckDuplicate.put(2, "Счёт №2");
+        billCheckDuplicate.put(3, "Счёт №3");
+        billCheckDuplicate.put(4, "Счёт №4");
+        billCheckDuplicate.put(5, "Счёт №5");
         when(userDao.getUser(userDto.getLogin(), "1")).thenReturn(user);
-        when(billDao.checkDuplicateInvoiceAndCount(bill)).thenReturn(billList);
+        when(billDao.checkDuplicateInvoiceAndCount(bill)).thenReturn(billCheckDuplicate);
         when(billDao.insert(bill)).thenReturn(bill);
         when(billMapper.billToBillDto(bill)).thenReturn(billDto);
 
@@ -108,13 +114,8 @@ public class BillServiceTest {
     }
 
     @Test
-    public void getBillAllUser() {
-        user.setId(1);
-       // bill.setUserId(1);
-        bill.setId(1);
-        List<Bill> billList = new ArrayList<>();
+    public void getBillAllUser_Success() {
         billList.add(bill);
-        System.out.println(bill);
         when(userDao.getUser(userDto.getLogin(), "1")).thenReturn(user);
         when(billDao.findByAll()).thenReturn(billList);
         when(billMapper.billToBillDto(bill)).thenReturn(billDto);
@@ -122,15 +123,51 @@ public class BillServiceTest {
         List<BillDto> resultList = billService.getBillAllUser(userDto, "1");
 
         assertEquals(resultList.size(), 1);
-
-
     }
 
     @Test
-    public void updateBill() {
+    public void updateBill_SumSuccess() {
+        bill.setId(1);
+        billDto.setValues(new BigDecimal(300));
+        Transaction transaction = new Transaction();
+        transaction.setNameAccount("Сбердебанк");
+        transaction.setUserId(user.getId());
+        transaction.setValues(billDto.getValues());
+        when(billDao.getBillId(anyObject())).thenReturn(bill.getId());
+        when(billDao.findById(bill.getId())).thenReturn(bill);
+        when(billDao.update(anyObject())).thenReturn(bill);
+        when(billMapper.billToBillDto(bill)).thenReturn(billDto);
+
+        BillDto result = billService.updateBill(transaction);
+        assertEquals(result.getValues(), billDto.getValues());
     }
 
     @Test
-    public void removeBillUser() {
+    public void updateBill_ValueGreaterThanBalance() {
+        bill.setId(1);
+        billDto.setValues(new BigDecimal(-300));
+        Transaction transaction = new Transaction();
+        transaction.setNameAccount("Сбердебанк");
+        transaction.setUserId(user.getId());
+        transaction.setValues(billDto.getValues());
+        when(billDao.getBillId(anyObject())).thenReturn(bill.getId());
+        when(billDao.findById(bill.getId())).thenReturn(bill);
+        when(billDao.update(anyObject())).thenReturn(bill);
+        when(billMapper.billToBillDto(bill)).thenReturn(billDto);
+
+        BillDto result = billService.updateBill(transaction);
+        assertNull(result.getValues());
+    }
+
+    @Test
+    public void removeBillUser_Success() {
+        billList.add(bill);
+        when(userDao.getUser(userDto.getLogin(), "1")).thenReturn(user);
+        when(billDao.findByAll()).thenReturn(billList);
+        when(billDao.delete(billList.get(0).getId())).thenReturn(true);
+
+        boolean result = billService.removeBillUser(userDto, "1", "Сбердебанк");
+
+        assertTrue(result);
     }
 }

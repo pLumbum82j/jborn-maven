@@ -1,5 +1,6 @@
 package ru.maven.jborn.models.dto;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class BillDto {
@@ -7,7 +8,8 @@ public class BillDto {
     private Integer id;
     private String nameAccount;
 
-    public Integer values;
+    //public Integer values;
+    public BigDecimal values;
 
     public Integer getId() {
         return id;
@@ -25,11 +27,11 @@ public class BillDto {
         this.nameAccount = numberAccounts;
     }
 
-    public Integer getValues() {
+    public BigDecimal getValues() {
         return values;
     }
 
-    public void setValues(Integer values) {
+    public void setValues(BigDecimal values) {
         this.values = values;
     }
 

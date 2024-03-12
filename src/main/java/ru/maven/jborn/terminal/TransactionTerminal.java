@@ -7,6 +7,7 @@ import ru.maven.jborn.services.CategoryService;
 import ru.maven.jborn.services.ServiceFactory;
 import ru.maven.jborn.services.TransactionService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
@@ -44,7 +45,7 @@ public class TransactionTerminal {
                     Scanner scanner1 = new Scanner(System.in);
                     String nameAccount = scanner1.nextLine();
                     System.out.println("Введите значение (сумма или разность операции)");
-                    Integer values = scanner.nextInt();
+                    BigDecimal values = new BigDecimal(String.valueOf(scanner.nextBigDecimal()));
                     System.out.println(categoryService.findByAllCategory());
                     System.out.println("Введите категорию");
                     Scanner scanner2 = new Scanner(System.in);
