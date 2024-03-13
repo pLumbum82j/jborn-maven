@@ -27,10 +27,9 @@ public class CategoryService {
 
     public List<CategoryDto> findByAllCategory() {
         List<Category> tempListAllCategory = categoryDao.findByAll();
-        if (tempListAllCategory == null) {
+        if (tempListAllCategory.isEmpty()) {
             return new ArrayList<>();
         } else {
-            tempListAllCategory = categoryDao.findByAll();
             return tempListAllCategory.stream().map(categoryMapper::categoryToCategoryDto).collect(Collectors.toList());
         }
     }
