@@ -53,11 +53,11 @@ public class TransactionDto {
         this.values = values;
     }
 
-    public String getSpendingCategoryName() {
+    public String getCategoryName() {
         return spendingCategoryName;
     }
 
-    public void setSpendingCategoryName(String spendingCategoryName) {
+    public void setCategoryName(String spendingCategoryName) {
         this.spendingCategoryName = spendingCategoryName;
     }
 

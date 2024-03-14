@@ -19,7 +19,7 @@ public class BillDto {
         this.id = id;
     }
 
-    public String getNameAccounts() {
+    public String getNameAccount() {
         return nameAccount;
     }
 

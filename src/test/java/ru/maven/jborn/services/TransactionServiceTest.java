@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import ru.maven.jborn.dao.domain.TransactionDao;
 import ru.maven.jborn.mappers.TransactionMapper;
 import ru.maven.jborn.models.Transaction;
+import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.TransactionDto;
 import ru.maven.jborn.models.dto.UserDto;
 
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,26 +36,35 @@ public class TransactionServiceTest {
     Transaction transaction;
     TransactionDto transactionDto;
     UserDto userDto;
+    BillDto billDto;
+    Integer id = 1;
 
     @Before
     public void setUp() {
         userDto = new UserDto();
-        userDto.setId(1);
+        userDto.setId(id);
         transaction = new Transaction();
+        billDto = new BillDto();
         BigDecimal values = new BigDecimal(100);
         Date date = new Date();
         String nameBill = "nameBill";
-        transaction.setId(1);
+        String nameCategory = "Продукты";
+        transaction.setId(id);
         transaction.setUserId(userDto.getId());
         transaction.setNameAccount(nameBill);
         transaction.setValues(values);
         transaction.setDate(date);
+        transaction.setCategoryName(nameCategory);
         transactionDto = new TransactionDto();
-        transactionDto.setId(1);
+        transactionDto.setId(id);
         transactionDto.setUserId(userDto.getId());
         transactionDto.setNameAccount(nameBill);
         transactionDto.setValues(values);
         transactionDto.setDate(date);
+        transactionDto.setCategoryName(nameCategory);
+        billDto.setId(id);
+        billDto.setNameAccounts(nameBill);
+        billDto.setValues(values);
     }
 
     @Test
@@ -82,14 +92,78 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void getTransactionUserById() {
+    public void getTransactionUserById_Success() {
+        when(transactionDao.findById(id)).thenReturn(transaction);
+        when(transactionMapper.transactionToTransactionDto(transaction)).thenReturn(transactionDto);
+
+        TransactionDto result = transactionService.getTransactionUserById(userDto, id);
+
+        assertEquals(result.getUserId(), userDto.getId());
+        assertEquals(result.getNameAccount(), transactionDto.getNameAccount());
     }
 
     @Test
-    public void createTransaction() {
+    public void getTransactionUserById_NotFound() {
+        when(transactionDao.findById(id)).thenReturn(new Transaction());
+
+        TransactionDto result = transactionService.getTransactionUserById(userDto, id);
+
+        assertNull(result.getId());
+        assertNull(result.getUserId());
+        assertNull(result.getNameAccount());
     }
 
     @Test
-    public void deleteTransactionUser() {
+    public void createTransaction_Success() {
+        when(billService.updateBill(anyObject())).thenReturn(billDto);
+        when(transactionDao.insert(anyObject())).thenReturn(transaction);
+        when(transactionMapper.transactionToTransactionDto(transaction)).thenReturn(transactionDto);
+
+        TransactionDto result = transactionService
+                .createTransaction(userDto, transaction.getNameAccount(),
+                        transaction.getValues(), transaction.getCategoryName());
+
+        assertEquals(result.getNameAccount(), transactionDto.getNameAccount());
+    }
+
+    @Test
+    public void createTransaction_NotCreat() {
+        when(billService.updateBill(anyObject())).thenReturn(new BillDto());
+
+        TransactionDto result = transactionService
+                .createTransaction(userDto, transaction.getNameAccount(),
+                        transaction.getValues(), transaction.getCategoryName());
+
+        assertNull(result.getId());
+        assertNull(result.getNameAccount());
+    }
+
+    @Test
+    public void deleteTransactionUser_Success() {
+        when(transactionDao.findById(id)).thenReturn(transaction);
+        when(transactionDao.delete(id)).thenReturn(true);
+
+        int result = transactionService.deleteTransactionUser(userDto, id);
+
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void deleteTransactionUser_NotRemove() {
+        when(transactionDao.findById(id)).thenReturn(transaction);
+        when(transactionDao.delete(id)).thenReturn(false);
+
+        int result = transactionService.deleteTransactionUser(userDto, id);
+
+        assertEquals(result, 2);
+    }
+
+    @Test
+    public void deleteTransactionUser_NotFound() {
+        when(transactionDao.findById(id)).thenReturn(new Transaction());
+
+        int result = transactionService.deleteTransactionUser(userDto, id);
+
+        assertEquals(result, 0);
     }
 }

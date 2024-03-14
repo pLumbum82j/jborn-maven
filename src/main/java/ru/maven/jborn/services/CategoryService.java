@@ -46,5 +46,4 @@ public class CategoryService {
     public boolean removeCategoryById(Integer id) {
         return categoryDao.delete(id);
     }
-
 }

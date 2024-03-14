@@ -14,7 +14,7 @@ public class TransactionMapper {
         transactionDto.setDate(transaction.getDate());
         transactionDto.setNameAccount(transaction.getNameAccount());
         transactionDto.setValues(transaction.getValues());
-        transactionDto.setSpendingCategoryName(transaction.getCategoryName());
+        transactionDto.setCategoryName(transaction.getCategoryName());
         transactionDto.setUserId(transaction.getUserId());
         return transactionDto;
     }

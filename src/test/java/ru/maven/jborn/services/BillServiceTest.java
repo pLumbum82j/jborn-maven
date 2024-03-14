@@ -93,7 +93,7 @@ public class BillServiceTest {
 
         BillDto resultBillDto = billService.createBill(userDto, "1", "Сбердебанк");
 
-        assertEquals(resultBillDto.getNameAccounts(), "duplicate");
+        assertEquals(resultBillDto.getNameAccount(), "duplicate");
     }
 
     @Test
@@ -110,7 +110,7 @@ public class BillServiceTest {
 
         BillDto resultBillDto = billService.createBill(userDto, "1", "Сбердебанк");
 
-        assertNull(resultBillDto.getNameAccounts());
+        assertNull(resultBillDto.getNameAccount());
     }
 
     @Test

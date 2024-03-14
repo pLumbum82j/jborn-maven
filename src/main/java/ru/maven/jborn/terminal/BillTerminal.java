@@ -28,9 +28,9 @@ public class BillTerminal {
                     Scanner scanner1 = new Scanner(System.in);
                     String nameAccount = checkNull(scanner1.nextLine());
                     BillDto billDto = billService.createBill(user, password, nameAccount);
-                    if (billDto.getNameAccounts() == null) {
+                    if (billDto.getNameAccount() == null) {
                         System.out.println("У пользователя более 5-и счетов, нельзя созать больше");
-                    } else if (billDto.getNameAccounts().equals("duplicate")) {
+                    } else if (billDto.getNameAccount().equals("duplicate")) {
                         System.out.println("Счёт с названием " + nameAccount + " уже сущесвует");
                     } else {
                         System.out.println("Создан счёт для пользователя: " + user.getLogin());

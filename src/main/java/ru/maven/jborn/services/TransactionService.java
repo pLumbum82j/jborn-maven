@@ -3,7 +3,6 @@ package ru.maven.jborn.services;
 import ru.maven.jborn.dao.domain.TransactionDao;
 import ru.maven.jborn.mappers.TransactionMapper;
 import ru.maven.jborn.models.Transaction;
-import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.TransactionDto;
 import ru.maven.jborn.models.dto.UserDto;
 
@@ -46,8 +45,7 @@ public class TransactionService {
         transaction.setValues(values);
         transaction.setCategoryName(categoryName);
         transaction.setUserId(userDto.getId());
-        BillDto billDto = billService.updateBill(transaction);
-        if (billDto.getId() == null) {
+        if (billService.updateBill(transaction).getId() == null) {
             return new TransactionDto();
         } else {
             return transactionMapper.transactionToTransactionDto(transactionDao.insert(transaction));
@@ -57,8 +55,7 @@ public class TransactionService {
     public int deleteTransactionUser(UserDto userDto, Integer id) {
         Transaction tr = transactionDao.findById(id);
         if (tr.getUserId() != null && tr.getUserId().equals(userDto.getId())) {
-            boolean resultDao = transactionDao.delete(id);
-            if (resultDao) {
+            if (transactionDao.delete(id)) {
                 return 1;
             } else return 2;
         }
