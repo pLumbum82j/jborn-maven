@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -169,5 +169,28 @@ public class BillServiceTest {
         boolean result = billService.removeBillUser(userDto, "1", "Сбердебанк");
 
         assertTrue(result);
+    }
+
+    @Test
+    public void getListUserAccounts_Success() {
+        billList.add(bill);
+        when(userDao.getUser(anyObject(), anyString())).thenReturn(user);
+        when(billDao.getListUserAccounts(anyInt())).thenReturn(billList);
+        when(billMapper.billToBillDto(anyObject())).thenReturn(billDto);
+
+        List<BillDto> result = billService.getListUserAccounts(userDto, "1");
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getNameAccount(), bill.getNameAccount());
+    }
+
+    @Test
+    public void getListUserAccounts_NotFoundBill() {
+        when(userDao.getUser(anyObject(), anyString())).thenReturn(user);
+        when(billDao.getListUserAccounts(anyInt())).thenReturn(billList);
+
+        List<BillDto> result = billService.getListUserAccounts(userDto, "1");
+
+        assertTrue(result.isEmpty());
     }
 }

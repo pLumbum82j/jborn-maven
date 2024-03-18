@@ -91,4 +91,10 @@ public class BillService {
             return 3;
         }
     }
+
+    public List<BillDto> getListUserAccounts(UserDto user, String password) {
+        return billDao.getListUserAccounts(userDao.getUser(user.getLogin(), password).getId()).stream()
+                .map(billMapper::billToBillDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,7 +1,6 @@
 package ru.maven.jborn.dao.domain;
 
 import ru.maven.jborn.dao.Dao;
-import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Bill;
 
 import javax.sql.DataSource;
@@ -16,6 +15,9 @@ public class BillDao implements Dao<Bill, Integer> {
 
     public BillDao(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    private BillDao() {
     }
 
     @Override
@@ -136,6 +138,26 @@ public class BillDao implements Dao<Bill, Integer> {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 result = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public List<Bill> getListUserAccounts(Integer userId) {
+        List<Bill> result = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("select id, name_account, user_id, values from bill where user_id = ?");
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Bill bill = new Bill();
+                bill.setId(rs.getInt("id"));
+                bill.setNameAccount(rs.getString("name_account"));
+                bill.setUserId(rs.getInt("user_id"));
+                bill.setValues(rs.getBigDecimal("values"));
+                result.add(bill);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

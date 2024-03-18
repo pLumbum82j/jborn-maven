@@ -25,6 +25,7 @@ public class TransactionTerminal {
             System.out.println("[2] Добавить транзакцию");
             System.out.println("[3] Показать транзакцию по id");
             System.out.println("[4] Удалить транзакцию");
+            System.out.println("[5] Перевод средств между счетами");
             System.out.println("[0] Выйти из меню");
             switch (scanner.nextInt()) {
                 case (1):
@@ -51,7 +52,7 @@ public class TransactionTerminal {
                     Scanner scanner2 = new Scanner(System.in);
                     String categoryName = scanner2.nextLine();
                     TransactionDto transactionDto = transactionService.createTransaction(user, nameAccount, values, categoryName);
-                    if (transactionDto.getId() == null){
+                    if (transactionDto.getId() == null) {
                         System.out.println("Операция не выполнена");
                     } else {
                         System.out.println(transactionDto);
@@ -77,6 +78,25 @@ public class TransactionTerminal {
                         System.out.println("Транзакция удалена");
                     } else {
                         System.out.println("такой транзакции нет у пользователя");
+                    }
+                    break;
+                case (5):
+                    System.out.println("Перевод средств между счетами");
+                    System.out.println("-----------------------------------");
+                    System.out.println("Введите название счёта с которого списать средства:");
+                    Scanner scanner3 = new Scanner(System.in);
+                    String sender = scanner3.nextLine();
+                    System.out.println("Введите название счёта на который перевести средства:");
+                    Scanner scanner4 = new Scanner(System.in);
+                    String recipient = scanner4.nextLine();
+                    System.out.println("Введите значение (сумма или разность операции)");
+                    BigDecimal values1 = new BigDecimal(String.valueOf(scanner.nextBigDecimal()));
+                    List<TransactionDto> transactionDtoList = transactionService
+                            .transactionsBetweenAccounts(user, password, sender, recipient, values1);
+                    if (transactionDtoList.isEmpty()) {
+                        System.out.println("Операция не выполнена");
+                    } else {
+                        System.out.println(transactionDtoList);
                     }
                     break;
                 case (0):

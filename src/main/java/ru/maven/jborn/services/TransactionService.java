@@ -3,11 +3,13 @@ package ru.maven.jborn.services;
 import ru.maven.jborn.dao.domain.TransactionDao;
 import ru.maven.jborn.mappers.TransactionMapper;
 import ru.maven.jborn.models.Transaction;
+import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.TransactionDto;
 import ru.maven.jborn.models.dto.UserDto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,5 +62,32 @@ public class TransactionService {
             } else return 2;
         }
         return 0;
+    }
+
+    public List<TransactionDto> transactionsBetweenAccounts(UserDto userDto, String password, String sender,
+                                                            String recipient, BigDecimal values) {
+        List<BillDto> checkBillByUser = billService.getListUserAccounts(userDto, password);
+        List<TransactionDto> result = new ArrayList<>();
+        if (checkBillByUser.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            long resultCheck = checkBillByUser.stream()
+                    .filter(b -> b.getNameAccount().equals(sender) || b.getNameAccount().equals(recipient)).count();
+            if (resultCheck == 2) {
+                String categoryName = "Свой Перевод";
+                BigDecimal bigDecimal = new BigDecimal(String.valueOf(values)).negate();
+                TransactionDto transactionDtoSender = createTransaction(userDto, sender, bigDecimal, categoryName);
+                if (transactionDtoSender.getId() == null) {
+                    return new ArrayList<>();
+                } else {
+                    result.add(createTransaction(userDto, recipient, values, categoryName));
+                    result.add(transactionDtoSender);
+
+                }
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        return result;
     }
 }

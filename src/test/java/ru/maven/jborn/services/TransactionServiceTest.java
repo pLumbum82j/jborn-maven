@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -165,5 +166,20 @@ public class TransactionServiceTest {
         int result = transactionService.deleteTransactionUser(userDto, id);
 
         assertEquals(result, 0);
+    }
+
+    @Test
+    public void transactionsBetweenAccounts_Success() {
+        List<BillDto> billDtoList = new ArrayList<>();
+        BillDto secondBill = new BillDto();
+        secondBill.setId(2);
+        secondBill.setNameAccounts("secondNameBill");
+        secondBill.setValues(new BigDecimal(100));
+        billDtoList.add(secondBill);
+        billDtoList.add(billDto);
+        when(billService.getListUserAccounts(anyObject(), anyString())).thenReturn(billDtoList);
+        when(transactionService.createTransaction(userDto, "nameBill", new BigDecimal(10), "Свой Перевод")).thenReturn()
+        when(transactionService.createTransaction(userDto, "secondNameBill", new BigDecimal(10).negate(), "Свой Перевод"));
+
     }
 }

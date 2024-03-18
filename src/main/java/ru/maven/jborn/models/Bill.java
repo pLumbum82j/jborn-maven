@@ -7,7 +7,6 @@ public class Bill {
     private Integer id;
     private String nameAccount;
     private Integer userId;
-   // private Integer values;
     private BigDecimal values;
 
     public Integer getId() {
