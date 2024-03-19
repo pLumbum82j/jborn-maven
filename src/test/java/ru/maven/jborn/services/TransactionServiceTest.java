@@ -172,14 +172,49 @@ public class TransactionServiceTest {
     public void transactionsBetweenAccounts_Success() {
         List<BillDto> billDtoList = new ArrayList<>();
         BillDto secondBill = new BillDto();
+        TransactionDto transactionDto2 = new TransactionDto();
+        transactionDto2.setId(2);
+        transactionDto2.setUserId(userDto.getId());
+        transactionDto2.setNameAccount("secondNameBill");
+        transactionDto2.setValues(new BigDecimal(10));
+        transactionDto2.setDate(transactionDto.getDate());
+        transactionDto2.setCategoryName(transactionDto.getCategoryName());
         secondBill.setId(2);
         secondBill.setNameAccounts("secondNameBill");
         secondBill.setValues(new BigDecimal(100));
         billDtoList.add(secondBill);
         billDtoList.add(billDto);
         when(billService.getListUserAccounts(anyObject(), anyString())).thenReturn(billDtoList);
-        when(transactionService.createTransaction(userDto, "nameBill", new BigDecimal(10), "Свой Перевод")).thenReturn()
-        when(transactionService.createTransaction(userDto, "secondNameBill", new BigDecimal(10).negate(), "Свой Перевод"));
+        when(billService.updateBill(anyObject())).thenReturn(billDto);
+        when(transactionService.createTransaction(userDto, "nameBill", new BigDecimal(10), "Свой Перевод")).thenReturn(transactionDto);
+        when(billService.updateBill(anyObject())).thenReturn(secondBill);
+        when(transactionService.createTransaction(userDto, "secondNameBill", new BigDecimal(10), "Свой Перевод")).thenReturn(transactionDto2);
 
+        List<TransactionDto> result = transactionService.transactionsBetweenAccounts(userDto, "1", "nameBill", "secondNameBill", new BigDecimal(10));
+
+        assertEquals(2, result.size());
+        assertEquals(result.get(0).getNameAccount(), transactionDto2.getNameAccount());
+     //  assertEquals(result.get(1).getNameAccount(), transactionDto.getNameAccount());
+    }
+
+    @Test
+    public void transactionsBetweenAccounts_BillNotFoundUser() {
+        List<BillDto> billDtoList = new ArrayList<>();
+        when(billService.getListUserAccounts(anyObject(), anyString())).thenReturn(billDtoList);
+
+        List<TransactionDto> result = transactionService.transactionsBetweenAccounts(userDto, "1", "nameBill", "secondNameBill", new BigDecimal(10));
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void transactionsBetweenAccounts_OnlyBillUser() {
+        List<BillDto> billDtoList = new ArrayList<>();
+        billDtoList.add(billDto);
+        when(billService.getListUserAccounts(anyObject(), anyString())).thenReturn(billDtoList);
+
+        List<TransactionDto> result = transactionService.transactionsBetweenAccounts(userDto, "1", "nameBill", "secondNameBill", new BigDecimal(10));
+
+        assertTrue(result.isEmpty());
     }
 }

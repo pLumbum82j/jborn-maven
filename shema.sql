@@ -16,14 +16,14 @@ CREATE TABLE bill (
                       id serial primary key,
                       name_account varchar(50) NOT NULL,
                       user_id bigint REFERENCES users (id) NOT NULL,
-                      values bigint NOT NULL
+                      values decimal NOT NULL
 );
 
 CREATE TABLE transaction (
                              id serial primary key,
                              date timestamp,
                              name_account_id bigint REFERENCES bill(id),
-                             values bigint NOT NULL,
+                             values decimal NOT NULL,
                              spending_category_id bigint REFERENCES spending_category(id) NOT NULL
 );
 
@@ -37,11 +37,12 @@ insert into spending_category(category_name) VALUES ('Зарплата');
 insert into spending_category(category_name) VALUES ('Автомобиль');
 insert into spending_category(category_name) VALUES ('Развлечения');
 insert into spending_category(category_name) VALUES ('Здоровье');
+insert into spending_category(category_name) VALUES ('Свой Перевод');
 
 insert into bill(name_account, user_id, values) VALUES ('Сбербанк', 1,10000);
 insert into bill(name_account, user_id, values) VALUES ('Тинькоф', 2,9000000);
 insert into bill(name_account, user_id, values) VALUES ('Альфабанк', 2,787);
-insert into bill(name_account, user_id, values) VALUES ('Яндекс', 3,7777777);
+insert into bill(name_account, user_id, values) VALUES ('Яндекс', 1,7777777);
 insert into bill(name_account, user_id, values) VALUES ('Сбербанк', 3,3);
 insert into bill(name_account, user_id, values) VALUES ('Убрир', 4,100);
 
