@@ -1,12 +1,21 @@
 package ru.maven.jborn.dao;
 
 import com.zaxxer.hikari.HikariDataSource;
+import liquibase.Contexts;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import ru.maven.jborn.dao.domain.BillDao;
 import ru.maven.jborn.dao.domain.CategoryDao;
 import ru.maven.jborn.dao.domain.TransactionDao;
 import ru.maven.jborn.dao.domain.UserDao;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 
 public class DaoFactory {
@@ -52,8 +61,23 @@ public class DaoFactory {
             ds.setUsername("jborn");
             ds.setPassword("jborn");
             dataSource = ds;
+            initDataBase();
         }
         return dataSource;
     }
 
+    private static void initDataBase() {
+        try {
+            DatabaseConnection connection = new JdbcConnection(dataSource.getConnection());
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
+            Liquibase liquibase = new Liquibase(
+                    "liquibase.xml",
+                    new ClassLoaderResourceAccessor(),
+                    database
+            );
+            liquibase.update(new Contexts());
+        } catch (SQLException | LiquibaseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
