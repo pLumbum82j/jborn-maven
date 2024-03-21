@@ -5,10 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <preConditions>
+ <!--   <preConditions>
         <dbms type="postgresql"/>
     </preConditions>
-
+-->
     <changeSet id="0" author="pb82">
         <tagDatabase tag="db_init"/>
     </changeSet>

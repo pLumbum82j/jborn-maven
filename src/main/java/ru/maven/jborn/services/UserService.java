@@ -23,20 +23,14 @@ public class UserService {
         user.setLogin(login);
         user.setEmail(email);
         user.setPassword(DigestUtils.md5Hex(password));
-        if (userDao.duplicateCheck(user) > 0) {
-            return userMapper.userToUserDto(null);
-        } else {
-            return userMapper.userToUserDto(userDao.insert(user));
-        }
+        return userDao.duplicateCheck(user) > 0 ?
+                userMapper.userToUserDto(null) : userMapper.userToUserDto(userDao.insert(user));
     }
 
     public UserDto getUser(String login, String password) {
         User user = userDao.getUser(login, password);
-        if (user.getId() == null) {
-            return new UserDto();
-        } else {
-            return userMapper.userToUserDto(user);
-        }
+        return user.getId() == null ? new UserDto() : userMapper.userToUserDto(user);
+
     }
 
     public UserDto getUserById(Integer id) {

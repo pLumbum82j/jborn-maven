@@ -57,9 +57,9 @@ public class DaoFactory {
     public static DataSource getDataSource() {
         if (dataSource == null) {
             HikariDataSource ds = new HikariDataSource();
-            ds.setJdbcUrl("jdbc:postgresql://localhost:5432/jborn_finance");
-            ds.setUsername("jborn");
-            ds.setPassword("jborn");
+            ds.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/jborn_finance"));
+            ds.setUsername(System.getProperty("jdbcUsername", "jborn"));
+            ds.setPassword(System.getProperty("jdbcPassword", "jborn"));
             dataSource = ds;
             initDataBase();
         }
