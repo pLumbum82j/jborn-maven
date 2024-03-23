@@ -1,10 +1,13 @@
 package ru.maven.jborn.models;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 public class Bill {
     private Integer id;
     private String nameAccount;
     private Integer userId;
-    private Integer values;
+    private BigDecimal values;
 
     public Integer getId() {
         return id;
@@ -30,11 +33,11 @@ public class Bill {
         this.userId = userId;
     }
 
-    public Integer getValues() {
+    public BigDecimal getValues() {
         return values;
     }
 
-    public void setValues(Integer values) {
+    public void setValues(BigDecimal values) {
         this.values = values;
     }
 
@@ -46,5 +49,18 @@ public class Bill {
                 ", userId=" + userId +
                 ", values=" + values +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bill bill = (Bill) o;
+        return Objects.equals(id, bill.id) && Objects.equals(nameAccount, bill.nameAccount) && Objects.equals(userId, bill.userId) && Objects.equals(values, bill.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nameAccount, userId, values);
     }
 }

@@ -3,7 +3,7 @@ package ru.maven.jborn.terminal;
 import java.util.Scanner;
 
 public class View {
-    private UserTerminal userTerminal = new UserTerminal();
+    private final UserTerminal userTerminal = new UserTerminal();
 
     public void mainMenu() {
         while (true) {
@@ -14,7 +14,6 @@ public class View {
             System.out.println("[3] Найти пользователя по id");
             System.out.println("[0] Выход из программы");
             Scanner scanner = new Scanner(System.in);
-            ;
             switch (scanner.nextInt()) {
                 case (1):
                     System.out.println("Вы выбрали = Зарегистрироваться");
@@ -38,5 +37,4 @@ public class View {
             }
         }
     }
-
 }

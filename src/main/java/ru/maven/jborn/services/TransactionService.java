@@ -7,15 +7,23 @@ import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.TransactionDto;
 import ru.maven.jborn.models.dto.UserDto;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TransactionService {
-    private final TransactionDao transactionDao = TransactionDao.getTransactionDao();
-    private final TransactionMapper transactionMapper = new TransactionMapper();
-    private final BillService billService = new BillService();
+    private final TransactionDao transactionDao;
+    private final TransactionMapper transactionMapper;
+    private final BillService billService;
+
+    public TransactionService(TransactionDao transactionDao, TransactionMapper transactionMapper, BillService billService) {
+        this.transactionDao = transactionDao;
+        this.transactionMapper = transactionMapper;
+        this.billService = billService;
+    }
 
     public List<TransactionDto> getAllTransactionUser(UserDto user) {
         List<Transaction> transactionListAllUsers = transactionDao.findByAll();
@@ -32,15 +40,14 @@ public class TransactionService {
         }
     }
 
-    public TransactionDto createTransaction(UserDto userDto, String nameAccount, Integer values, String categoryName) {
+    public TransactionDto createTransaction(UserDto userDto, String nameAccount, BigDecimal values, String categoryName) {
         Transaction transaction = new Transaction();
         transaction.setDate(Date.from(Instant.now()));
         transaction.setNameAccount(nameAccount);
         transaction.setValues(values);
         transaction.setCategoryName(categoryName);
         transaction.setUserId(userDto.getId());
-        BillDto billDto = billService.updateBill(transaction);
-        if (billDto.getId() == null) {
+        if (billService.updateBill(transaction).getId() == null) {
             return new TransactionDto();
         } else {
             return transactionMapper.transactionToTransactionDto(transactionDao.insert(transaction));
@@ -50,11 +57,37 @@ public class TransactionService {
     public int deleteTransactionUser(UserDto userDto, Integer id) {
         Transaction tr = transactionDao.findById(id);
         if (tr.getUserId() != null && tr.getUserId().equals(userDto.getId())) {
-            boolean resultDao = transactionDao.delete(id);
-            if (resultDao) {
+            if (transactionDao.delete(id)) {
                 return 1;
             } else return 2;
         }
         return 0;
+    }
+
+    public List<TransactionDto> transactionsBetweenAccounts(UserDto userDto, String password, String sender,
+                                                            String recipient, BigDecimal values) {
+        List<BillDto> checkBillByUser = billService.getListUserAccounts(userDto, password);
+        List<TransactionDto> result = new ArrayList<>();
+        if (checkBillByUser.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            long resultCheck = checkBillByUser.stream()
+                    .filter(b -> b.getNameAccount().equals(sender) || b.getNameAccount().equals(recipient)).count();
+            if (resultCheck == 2) {
+                String categoryName = "Свой Перевод";
+                BigDecimal bigDecimal = new BigDecimal(String.valueOf(values)).negate();
+                TransactionDto transactionDtoSender = createTransaction(userDto, sender, bigDecimal, categoryName);
+                if (transactionDtoSender.getId() == null) {
+                    return new ArrayList<>();
+                } else {
+                    result.add(createTransaction(userDto, recipient, values, categoryName));
+                    result.add(transactionDtoSender);
+
+                }
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        return result;
     }
 }

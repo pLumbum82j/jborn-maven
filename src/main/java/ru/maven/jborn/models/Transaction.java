@@ -1,12 +1,15 @@
 package ru.maven.jborn.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 public class Transaction {
    private Integer id;
    private Date date;
    private String nameAccount;
-   private Integer values;
+   //private Integer values;
+   private BigDecimal values;
    private String categoryName;
    private Integer userId;
 
@@ -42,11 +45,11 @@ public class Transaction {
       this.nameAccount = nameAccount;
    }
 
-   public Integer getValues() {
+   public BigDecimal getValues() {
       return values;
    }
 
-   public void setValues(Integer values) {
+   public void setValues(BigDecimal values) {
       this.values = values;
    }
 
@@ -68,5 +71,18 @@ public class Transaction {
               ", spendingCategoryName=" + categoryName +
               ", userId=" + userId +
               '}';
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Transaction that = (Transaction) o;
+      return Objects.equals(id, that.id) && Objects.equals(date, that.date) && Objects.equals(nameAccount, that.nameAccount) && Objects.equals(values, that.values) && Objects.equals(categoryName, that.categoryName) && Objects.equals(userId, that.userId);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(id, date, nameAccount, values, categoryName, userId);
    }
 }

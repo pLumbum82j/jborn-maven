@@ -1,11 +1,15 @@
 package ru.maven.jborn.models.dto;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 public class BillDto {
 
     private Integer id;
     private String nameAccount;
 
-    public Integer values;
+    //public Integer values;
+    public BigDecimal values;
 
     public Integer getId() {
         return id;
@@ -15,7 +19,7 @@ public class BillDto {
         this.id = id;
     }
 
-    public String getNameAccounts() {
+    public String getNameAccount() {
         return nameAccount;
     }
 
@@ -23,11 +27,11 @@ public class BillDto {
         this.nameAccount = numberAccounts;
     }
 
-    public Integer getValues() {
+    public BigDecimal getValues() {
         return values;
     }
 
-    public void setValues(Integer values) {
+    public void setValues(BigDecimal values) {
         this.values = values;
     }
 
@@ -38,5 +42,18 @@ public class BillDto {
                 ", nameAccount=" + nameAccount +
                 ", values=" + values +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BillDto billDto = (BillDto) o;
+        return Objects.equals(id, billDto.id) && Objects.equals(nameAccount, billDto.nameAccount) && Objects.equals(values, billDto.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nameAccount, values);
     }
 }

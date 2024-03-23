@@ -3,12 +3,13 @@ package ru.maven.jborn.terminal;
 import ru.maven.jborn.models.dto.BillDto;
 import ru.maven.jborn.models.dto.UserDto;
 import ru.maven.jborn.services.BillService;
+import ru.maven.jborn.services.ServiceFactory;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class BillTerminal {
-    BillService billService = new BillService();
+    BillService billService = ServiceFactory.getBillService();
     Scanner scanner = new Scanner(System.in);
 
     public void billMenu(UserDto user, String password) {
@@ -27,9 +28,9 @@ public class BillTerminal {
                     Scanner scanner1 = new Scanner(System.in);
                     String nameAccount = checkNull(scanner1.nextLine());
                     BillDto billDto = billService.createBill(user, password, nameAccount);
-                    if (billDto.getNameAccounts() == null) {
+                    if (billDto.getNameAccount() == null) {
                         System.out.println("У пользователя более 5-и счетов, нельзя созать больше");
-                    } else if (billDto.getNameAccounts().equals("duplicate")) {
+                    } else if (billDto.getNameAccount().equals("duplicate")) {
                         System.out.println("Счёт с названием " + nameAccount + " уже сущесвует");
                     } else {
                         System.out.println("Создан счёт для пользователя: " + user.getLogin());
@@ -63,12 +64,8 @@ public class BillTerminal {
                     return;
                 default:
                     System.out.println("Такого варианта выбора нет");
-
-
             }
-
         }
-
     }
 
     private String checkNull(String string) {

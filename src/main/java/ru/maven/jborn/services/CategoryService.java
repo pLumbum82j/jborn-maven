@@ -11,8 +11,13 @@ import java.util.stream.Collectors;
 
 public class CategoryService {
 
-    private final CategoryMapper categoryMapper = new CategoryMapper();
-    private final CategoryDao categoryDao = CategoryDao.getCategoryDao();
+    private final CategoryMapper categoryMapper;
+    private final CategoryDao categoryDao;
+
+    public CategoryService(CategoryMapper categoryMapper, CategoryDao categoryDao) {
+        this.categoryMapper = categoryMapper;
+        this.categoryDao = categoryDao;
+    }
 
     public CategoryDto createCategory(String name) {
         Category category = new Category();
@@ -22,10 +27,9 @@ public class CategoryService {
 
     public List<CategoryDto> findByAllCategory() {
         List<Category> tempListAllCategory = categoryDao.findByAll();
-        if (tempListAllCategory == null) {
+        if (tempListAllCategory.isEmpty()) {
             return new ArrayList<>();
         } else {
-            tempListAllCategory = categoryDao.findByAll();
             return tempListAllCategory.stream().map(categoryMapper::categoryToCategoryDto).collect(Collectors.toList());
         }
     }
@@ -42,5 +46,4 @@ public class CategoryService {
     public boolean removeCategoryById(Integer id) {
         return categoryDao.delete(id);
     }
-
 }

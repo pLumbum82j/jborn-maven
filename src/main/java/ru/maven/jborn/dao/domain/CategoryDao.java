@@ -4,18 +4,16 @@ import ru.maven.jborn.dao.Dao;
 import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Category;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDao implements Dao<Category, Integer> {
-    private static CategoryDao categoryDao;
+    private static DataSource dataSource;
 
-    public static CategoryDao getCategoryDao() {
-        if (categoryDao == null) {
-            categoryDao = new CategoryDao();
-        }
-        return categoryDao;
+    public CategoryDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     private CategoryDao() {
@@ -24,7 +22,7 @@ public class CategoryDao implements Dao<Category, Integer> {
     @Override
     public Category findById(Integer id) {
         Category category = new Category();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select id, category_name from spending_category where id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -41,7 +39,7 @@ public class CategoryDao implements Dao<Category, Integer> {
     @Override
     public List<Category> findByAll() {
         List<Category> resultListCategory = new ArrayList<>();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery("select id, category_name from spending_category");
             while (rs.next()) {
@@ -63,7 +61,7 @@ public class CategoryDao implements Dao<Category, Integer> {
             return new Category();
         }
 
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("insert into spending_category(category_name) values (?)");
             ps.setString(1, category.getCategoryName());
             ps.executeUpdate();
@@ -83,7 +81,7 @@ public class CategoryDao implements Dao<Category, Integer> {
     @Override
     public boolean delete(Integer id) {
         boolean result = false;
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("delete from spending_category where id = ?");
             ps.setInt(1, id);
             int check = ps.executeUpdate();
@@ -99,7 +97,7 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     private Category findByName(Category category) {
         Category resultCategory = new Category();
-        try (Connection connection = DaoFactory.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("select id from spending_category where category_name = ?");
             ps.setString(1, category.getCategoryName());
             ResultSet rs = ps.executeQuery();

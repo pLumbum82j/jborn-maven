@@ -7,8 +7,14 @@ import ru.maven.jborn.models.User;
 import ru.maven.jborn.models.dto.UserDto;
 
 public class UserService {
-    private final UserMapper userMapper = new UserMapper();
-    private final UserDao userDao = UserDao.getUserDao();
+
+    private final UserMapper userMapper;
+    private final UserDao userDao;
+
+    public UserService(UserMapper userMapper, UserDao userDao) {
+        this.userMapper = userMapper;
+        this.userDao = userDao;
+    }
 
     public UserDto createUser(String firstName, String lastName, String login, String email, String password) {
         User user = new User();
@@ -18,7 +24,7 @@ public class UserService {
         user.setEmail(email);
         user.setPassword(DigestUtils.md5Hex(password));
         if (userDao.duplicateCheck(user) > 0) {
-            return userMapper.userToUserDto(user);
+            return userMapper.userToUserDto(null);
         } else {
             return userMapper.userToUserDto(userDao.insert(user));
         }
@@ -36,6 +42,4 @@ public class UserService {
     public UserDto getUserById(Integer id) {
         return userMapper.userToUserDto(userDao.findById(id));
     }
-
-
 }
