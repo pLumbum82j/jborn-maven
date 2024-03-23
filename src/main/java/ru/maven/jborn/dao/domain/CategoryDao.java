@@ -1,7 +1,6 @@
 package ru.maven.jborn.dao.domain;
 
 import ru.maven.jborn.dao.Dao;
-import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Category;
 
 import javax.sql.DataSource;
@@ -10,13 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDao implements Dao<Category, Integer> {
-    private static DataSource dataSource;
+    private final DataSource dataSource;
 
     public CategoryDao(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    private CategoryDao() {
     }
 
     @Override

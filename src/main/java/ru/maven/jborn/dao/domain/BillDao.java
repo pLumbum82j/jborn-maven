@@ -11,20 +11,18 @@ import java.util.List;
 import java.util.Map;
 
 public class BillDao implements Dao<Bill, Integer> {
-    private static DataSource dataSource;
+    private final DataSource dataSource;
 
     public BillDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    private BillDao() {
-    }
 
     @Override
     public Bill findById(Integer id) {
         Bill bill = new Bill();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select * from  bill where id =?");
+            PreparedStatement ps = connection.prepareStatement("select id, user_id, name_account, values from  bill where id =?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -44,7 +42,7 @@ public class BillDao implements Dao<Bill, Integer> {
         List<Bill> resultAllBill = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("select * from bill");
+            ResultSet rs = st.executeQuery("select id, user_id, name_account, values from bill");
             while (rs.next()) {
                 Bill bill = new Bill();
                 bill.setId(rs.getInt("id"));
