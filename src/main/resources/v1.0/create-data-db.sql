@@ -10,15 +10,15 @@ insert into spending_category(category_name) VALUES ('Автомобиль');
 insert into spending_category(category_name) VALUES ('Развлечения');
 insert into spending_category(category_name) VALUES ('Здоровье');
 
-insert into bill(name_account, user_id, values) VALUES ('Сбербанк', 1,10000);
-insert into bill(name_account, user_id, values) VALUES ('Тинькоф', 2,9000000);
-insert into bill(name_account, user_id, values) VALUES ('Альфабанк', 2,787);
-insert into bill(name_account, user_id, values) VALUES ('Яндекс', 1,7777777);
-insert into bill(name_account, user_id, values) VALUES ('Сбербанк', 3,3);
-insert into bill(name_account, user_id, values) VALUES ('Убрир', 4,100);
+insert into bill(name_account, user_id, bill_val) VALUES ('Сбербанк', 1,10000);
+insert into bill(name_account, user_id, bill_val) VALUES ('Тинькоф', 2,9000000);
+insert into bill(name_account, user_id, bill_val) VALUES ('Альфабанк', 2,787);
+insert into bill(name_account, user_id, bill_val) VALUES ('Яндекс', 1,7777777);
+insert into bill(name_account, user_id, bill_val) VALUES ('Сбербанк', 3,3);
+insert into bill(name_account, user_id, bill_val) VALUES ('Убрир', 4,100);
 
-insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-01', 1, -100, 1);
-insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-02', 2, 300, 2);
-insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-01', 3, -1000, 3);
-insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-02', 4, -10, 4);
-insert into transaction(date, name_account_id, values, spending_category_id) VALUES ('2024-01-02', 2, -1000, 5);
+insert into transaction(date, name_account_id, transaction_val, spending_category_id) VALUES ('2024-01-01', 1, -100, 1);
+insert into transaction(date, name_account_id, transaction_val, spending_category_id) VALUES ('2024-01-02', 2, 300, 2);
+insert into transaction(date, name_account_id, transaction_val, spending_category_id) VALUES ('2024-01-01', 3, -1000, 3);
+insert into transaction(date, name_account_id, transaction_val, spending_category_id) VALUES ('2024-01-02', 4, -10, 4);
+insert into transaction(date, name_account_id, transaction_val, spending_category_id) VALUES ('2024-01-02', 2, -1000, 5);

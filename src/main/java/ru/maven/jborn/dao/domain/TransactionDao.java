@@ -1,7 +1,6 @@
 package ru.maven.jborn.dao.domain;
 
 import ru.maven.jborn.dao.Dao;
-import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.Transaction;
 
 import javax.sql.DataSource;
@@ -25,7 +24,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
     public Transaction findById(Integer id) {
         Transaction transaction = new Transaction();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select tr.id, tr.date, b.name_account, tr.values, sc.category_name, u.id as userId " +
+            PreparedStatement ps = connection.prepareStatement("select tr.id, tr.date, b.name_account, tr.transaction_val, sc.category_name, u.id as userId " +
                     "from transaction as tr " +
                     "join public.bill b on b.id = tr.name_account_id " +
                     "join public.spending_category sc on sc.id = tr.spending_category_id " +
@@ -37,7 +36,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
                 transaction.setId(rs.getInt("id"));
                 transaction.setDate(rs.getDate("date"));
                 transaction.setNameAccount(rs.getString("name_account"));
-                transaction.setValues(rs.getBigDecimal("values"));
+                transaction.setValues(rs.getBigDecimal("transaction_val"));
                 transaction.setCategoryName(rs.getString("category_name"));
                 transaction.setUserId(rs.getInt("userId"));
             }
@@ -52,7 +51,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
         List<Transaction> transactionsAll = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("select tr.id, tr.date, b.name_account, tr.values, sp.category_name, u.id as userid\n" +
+            ResultSet rs = st.executeQuery("select tr.id, tr.date, b.name_account, tr.transaction_val, sp.category_name, u.id as userid\n" +
                     "from transaction as tr\n" +
                     "join spending_category as sp ON tr.spending_category_id = sp.id\n" +
                     "join bill as b ON b.id = tr.name_account_id\n" +
@@ -62,7 +61,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
                 transaction.setId(rs.getInt("id"));
                 transaction.setDate(rs.getDate("date"));
                 transaction.setNameAccount(rs.getString("name_account"));
-                transaction.setValues(rs.getBigDecimal("values"));
+                transaction.setValues(rs.getBigDecimal("transaction_val"));
                 transaction.setCategoryName(rs.getString("category_name"));
                 transaction.setUserId(rs.getInt("userid"));
                 transactionsAll.add(transaction);
@@ -84,7 +83,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
 
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection
-                    .prepareStatement("insert into transaction(DATE, NAME_ACCOUNT_ID, VALUES, SPENDING_CATEGORY_ID) VALUES (?,?,?,?)");
+                    .prepareStatement("insert into transaction(date, name_account_id, transaction_val, spending_category_id) VALUES (?,?,?,?)");
             ps.setObject(1, transaction.getDate(), Types.DATE);
             ps.setInt(2, nameAccountId);
             ps.setBigDecimal(3, transaction.getValues());
@@ -92,7 +91,7 @@ public class TransactionDao implements Dao<Transaction, Integer> {
             ps.executeUpdate();
 
             PreparedStatement psId = connection.prepareStatement("select id from transaction " +
-                    "where date = ? and name_account_id = ? and values = ?");
+                    "where date = ? and name_account_id = ? and transaction_val = ?");
             psId.setObject(1, transaction.getDate(), Types.DATE);
             psId.setInt(2, nameAccountId);
             psId.setBigDecimal(3, transaction.getValues());

@@ -22,14 +22,14 @@ public class BillDao implements Dao<Bill, Integer> {
     public Bill findById(Integer id) {
         Bill bill = new Bill();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select id, user_id, name_account, values from  bill where id =?");
+            PreparedStatement ps = connection.prepareStatement("select id, name_account, user_id, bill_val from  bill where id =?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 bill.setId(rs.getInt("id"));
                 bill.setNameAccount(rs.getString("name_account"));
                 bill.setId(rs.getInt("user_id"));
-                bill.setValues(rs.getBigDecimal("values"));
+                bill.setValues(rs.getBigDecimal("bill_val"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -42,13 +42,13 @@ public class BillDao implements Dao<Bill, Integer> {
         List<Bill> resultAllBill = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("select id, user_id, name_account, values from bill");
+            ResultSet rs = st.executeQuery("select id, name_account, user_id, bill_val from bill");
             while (rs.next()) {
                 Bill bill = new Bill();
                 bill.setId(rs.getInt("id"));
                 bill.setUserId(rs.getInt("user_id"));
                 bill.setNameAccount(rs.getString("name_account"));
-                bill.setValues(rs.getBigDecimal("values"));
+                bill.setValues(rs.getBigDecimal("bill_val"));
                 resultAllBill.add(bill);
             }
         } catch (SQLException e) {
@@ -61,7 +61,7 @@ public class BillDao implements Dao<Bill, Integer> {
     public Bill insert(Bill bill) {
         Bill resultBill = new Bill();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("insert into bill(name_account, user_id, values) values (?,?,?)");
+            PreparedStatement ps = connection.prepareStatement("insert into bill(name_account, user_id, bill_val) values (?,?,?)");
             ps.setString(1, bill.getNameAccount());
             ps.setInt(2, bill.getUserId());
             ps.setBigDecimal(3, bill.getValues());
@@ -85,7 +85,7 @@ public class BillDao implements Dao<Bill, Integer> {
     @Override
     public Bill update(Bill bill) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("update bill set values = ? where id = ?");
+            PreparedStatement ps = connection.prepareStatement("update bill set bill_val = ? where id = ?");
             ps.setBigDecimal(1, bill.getValues());
             ps.setInt(2, bill.getId());
             ps.executeUpdate();
@@ -97,13 +97,15 @@ public class BillDao implements Dao<Bill, Integer> {
 
     @Override
     public boolean delete(Integer id) {
-        boolean result;
+        boolean result = false;
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection
                     .prepareStatement("delete from bill where id = ?");
             ps.setInt(1, id);
-            result = ps.execute();
-
+            int check = ps.executeUpdate();
+            if (check == 1) {
+                result = true;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -146,7 +148,7 @@ public class BillDao implements Dao<Bill, Integer> {
     public List<Bill> getListUserAccounts(Integer userId) {
         List<Bill> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select id, name_account, user_id, values from bill where user_id = ?");
+            PreparedStatement ps = connection.prepareStatement("select id, name_account, user_id, bill_val from bill where user_id = ?");
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -154,7 +156,7 @@ public class BillDao implements Dao<Bill, Integer> {
                 bill.setId(rs.getInt("id"));
                 bill.setNameAccount(rs.getString("name_account"));
                 bill.setUserId(rs.getInt("user_id"));
-                bill.setValues(rs.getBigDecimal("values"));
+                bill.setValues(rs.getBigDecimal("bill_val"));
                 result.add(bill);
             }
         } catch (SQLException e) {

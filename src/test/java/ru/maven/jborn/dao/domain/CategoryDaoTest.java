@@ -22,6 +22,8 @@ public class CategoryDaoTest {
 
         categoryDao = DaoFactory.getCategoryDao();
 
+        categoryDao.findByAll().forEach(cat -> categoryDao.delete(cat.getId()));
+
         category = new Category();
         category.setId(1);
         category.setCategoryName("CategoryName");
@@ -32,16 +34,17 @@ public class CategoryDaoTest {
     public void createCategory_Success() {
         Category result = categoryDao.insert(category);
 
-        assertEquals(Optional.of(1), Optional.ofNullable(categoryDao.findById(1).getId()));
-        assertEquals(result.getId(), category.getId());
+        assertNotNull(result.getId());
+        assertEquals(result.getCategoryName(), category.getCategoryName());
 
     }
 
     @Test
     public void findById_Success() {
-        categoryDao.insert(category);
-        Category result = categoryDao.findById(category.getId());
-        assertEquals(category.getId(), result.getId());
+        Category tempCategory = categoryDao.insert(category);
+
+        Category result = categoryDao.findById(tempCategory.getId());
+
         assertEquals(category.getCategoryName(), result.getCategoryName());
 
     }
@@ -49,7 +52,9 @@ public class CategoryDaoTest {
     @Test
     public void findById_NotFound() {
         categoryDao.insert(category);
-        Category result = categoryDao.findById(2);
+
+        Category result = categoryDao.findById(999);
+
         assertNull(result.getId());
         assertNull(result.getCategoryName());
 
@@ -66,9 +71,10 @@ public class CategoryDaoTest {
     @Test
     public void findByAll_Success() {
         categoryDao.insert(category);
-        List<Category> result = categoryDao.findByAll();
-        assertEquals(Optional.of(1), Optional.ofNullable(categoryDao.findById(1).getId()));
 
+        List<Category> result = categoryDao.findByAll();
+
+        assertEquals(Optional.of(1), Optional.ofNullable(categoryDao.findById(1).getId()));
         assertEquals(1, result.size());
     }
 
