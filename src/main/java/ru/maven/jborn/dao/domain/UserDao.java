@@ -1,14 +1,11 @@
 package ru.maven.jborn.dao.domain;
 
 import ru.maven.jborn.dao.Dao;
-import ru.maven.jborn.dao.DaoFactory;
 import ru.maven.jborn.models.User;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDao implements Dao<User, Integer> {
@@ -23,7 +20,7 @@ public class UserDao implements Dao<User, Integer> {
     public User findById(Integer id) {
         User resultUser = new User();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select * from users where id = ?");
+            PreparedStatement ps = connection.prepareStatement("select id, first_name, last_name, login, email, password from users where id = ?");
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -42,7 +39,23 @@ public class UserDao implements Dao<User, Integer> {
 
     @Override
     public List<User> findByAll() {
-        return null;
+        List<User> resultListAllUsers = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select id, first_name, last_name, login, email, password from users");
+            while (rs.next()) {
+                User foundUser = new User();
+                foundUser.setId(rs.getInt("id"));
+                foundUser.setFirstName(rs.getString("first_name"));
+                foundUser.setLastName(rs.getString("last_name"));
+                foundUser.setLogin(rs.getString("login"));
+                foundUser.setEmail(rs.getString("email"));
+                resultListAllUsers.add(foundUser);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultListAllUsers;
     }
 
     @Override
@@ -77,13 +90,14 @@ public class UserDao implements Dao<User, Integer> {
 
     @Override
     public boolean delete(Integer id) {
-        boolean result;
+        boolean result = false;
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection
-                    .prepareStatement("delete from users where id = ?");
+            PreparedStatement ps = connection.prepareStatement("delete from users where id = ?");
             ps.setInt(1, id);
-            result = ps.execute();
-
+            int check = ps.executeUpdate();
+            if (check == 1) {
+                result = true;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -109,7 +123,7 @@ public class UserDao implements Dao<User, Integer> {
     public User getUser(String login, String password) {
         User user = new User();
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("select * from users where login = ? and password = ?");
+            PreparedStatement ps = connection.prepareStatement("select id, first_name, last_name, login, email, password from users where login = ? and password = ?");
             ps.setString(1, login);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();

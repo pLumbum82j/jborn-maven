@@ -27,7 +27,7 @@ public class TransactionMapperTest {
         transaction.setId(1);
         transaction.setDate(new Date());
         transaction.setNameAccount("NameBill");
-        transaction.setValues(new BigDecimal(300));
+        transaction.setValues(BigDecimal.valueOf(300));
         transaction.setCategoryName("CategoryName");
         transaction.setUserId(1);
 

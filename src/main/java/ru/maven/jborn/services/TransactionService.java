@@ -33,11 +33,8 @@ public class TransactionService {
 
     public TransactionDto getTransactionUserById(UserDto userDto, Integer id) {
         Transaction tr = transactionDao.findById(id);
-        if (tr.getUserId() != null && tr.getUserId().equals(userDto.getId())) {
-            return transactionMapper.transactionToTransactionDto(tr);
-        } else {
-            return new TransactionDto();
-        }
+        return tr.getUserId() != null && tr.getUserId().equals(userDto.getId()) ?
+                transactionMapper.transactionToTransactionDto(tr) : new TransactionDto();
     }
 
     public TransactionDto createTransaction(UserDto userDto, String nameAccount, BigDecimal values, String categoryName) {
@@ -47,11 +44,8 @@ public class TransactionService {
         transaction.setValues(values);
         transaction.setCategoryName(categoryName);
         transaction.setUserId(userDto.getId());
-        if (billService.updateBill(transaction).getId() == null) {
-            return new TransactionDto();
-        } else {
-            return transactionMapper.transactionToTransactionDto(transactionDao.insert(transaction));
-        }
+        return billService.updateBill(transaction).getId() == null ?
+                new TransactionDto() : transactionMapper.transactionToTransactionDto(transactionDao.insert(transaction));
     }
 
     public int deleteTransactionUser(UserDto userDto, Integer id) {

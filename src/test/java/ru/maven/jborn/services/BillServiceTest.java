@@ -128,7 +128,7 @@ public class BillServiceTest {
     @Test
     public void updateBill_SumSuccess() {
         bill.setId(1);
-        billDto.setValues(new BigDecimal(300));
+        billDto.setValues(BigDecimal.valueOf(300));
         Transaction transaction = new Transaction();
         transaction.setNameAccount("Сбердебанк");
         transaction.setUserId(user.getId());
@@ -145,7 +145,7 @@ public class BillServiceTest {
     @Test
     public void updateBill_ValueGreaterThanBalance() {
         bill.setId(1);
-        billDto.setValues(new BigDecimal(-300));
+        billDto.setValues(BigDecimal.valueOf(300).negate());
         Transaction transaction = new Transaction();
         transaction.setNameAccount("Сбердебанк");
         transaction.setUserId(user.getId());

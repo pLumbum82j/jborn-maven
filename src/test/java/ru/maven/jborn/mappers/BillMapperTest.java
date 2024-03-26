@@ -25,7 +25,7 @@ public class BillMapperTest {
         bill.setId(1);
         bill.setNameAccount("NameBill");
         bill.setUserId(1);
-        bill.setValues(new BigDecimal(100));
+        bill.setValues(BigDecimal.valueOf(100));
 
         BillDto result = billMapper.billToBillDto(bill);
 

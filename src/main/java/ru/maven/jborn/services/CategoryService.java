@@ -27,20 +27,15 @@ public class CategoryService {
 
     public List<CategoryDto> findByAllCategory() {
         List<Category> tempListAllCategory = categoryDao.findByAll();
-        if (tempListAllCategory.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            return tempListAllCategory.stream().map(categoryMapper::categoryToCategoryDto).collect(Collectors.toList());
-        }
+        return tempListAllCategory.isEmpty() ?
+                new ArrayList<>() :
+                tempListAllCategory.stream().map(categoryMapper::categoryToCategoryDto).collect(Collectors.toList());
     }
 
     public CategoryDto findCategoryById(Integer id) {
         Category resultCategory = categoryDao.findById(id);
-        if (resultCategory.getId() == null) {
-            return new CategoryDto();
-        } else {
-            return categoryMapper.categoryToCategoryDto(resultCategory);
-        }
+        return resultCategory.getId() == null ?
+                new CategoryDto() : categoryMapper.categoryToCategoryDto(resultCategory);
     }
 
     public boolean removeCategoryById(Integer id) {

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!--   <preConditions>
+           <dbms type="postgresql"/>
+       </preConditions>
+   -->
+
+    <changeSet id="1" author="pb82">
+        <createTable tableName="users">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+            </column>
+            <column name="login" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="spending_category">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="category_name" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="bill">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name_account" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bill_val" type="DECIMAL" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="transaction">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_account_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_val" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spending_category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="transaction" baseColumnNames="name_account_id"
+                                 constraintName="fk_name_account_id_from_transaction"
+                                 referencedTableName="bill" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="transaction" baseColumnNames="spending_category_id"
+                                 constraintName="fk_spending_category_id_from_transaction"
+                                 referencedTableName="spending_category" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="bill" baseColumnNames="user_id"
+                                 constraintName="fk_user_id_from_bill"
+                                 referencedTableName="users" referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

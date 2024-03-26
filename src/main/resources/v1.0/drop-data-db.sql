@@ -1,0 +1,1 @@
+TRUNCATE TABLE transaction, bill, users, spending_category;
